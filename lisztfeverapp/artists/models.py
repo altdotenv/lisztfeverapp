@@ -2,6 +2,18 @@ from django.db import models
 from lisztfeverapp.events import models as event_models
 
 # Create your models here.
+class TimeStampedModel(models.Model):
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class Genre(TimeStampedModel):
+
+    genre = models.CharField(max_length=50)
+
 class Artists(models.Model):
     artistid = models.CharField(db_column='artistId', primary_key=True, max_length=255)  # Field name made lowercase.
     artistname = models.CharField(db_column='artistName', max_length=255, blank=True, null=True)  # Field name made lowercase.
@@ -12,18 +24,17 @@ class Artists(models.Model):
     updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
     imageurl = models.CharField(db_column='imageUrl', max_length=255, blank=True, null=True)  # Field name made lowercase.
     events = models.ManyToManyField(event_models.Event, through='ArtistEvent')
+    genres = models.ManyToManyField(Genre, through='ArtistGenre')
 
     class Meta:
         db_table = 'artists'
         ordering = ['-popularity']
 
-class TimeStampedModel(models.Model):
+class ArtistGenre(TimeStampedModel):
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    artist = models.ForeignKey(Artists, db_column='artistId', on_delete=models.CASCADE, null=True)
+    genre = models.ForeignKey(Genre, db_column='genre', on_delete=models.CASCADE)
 
-    class Meta:
-        abstract = True
 
 class ArtistEvent(TimeStampedModel):
 
@@ -59,6 +70,15 @@ class ArtistAlbums(models.Model):
         db_table = 'artist_albums'
         unique_together = (('artistid', 'albumid'),)
 
+class ArtistGenres(models.Model):
+    artistid = models.CharField(db_column='artistId', primary_key=True, max_length=50)  # Field name made lowercase.
+    genre = models.CharField(max_length=50)
+    updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'artist_genres'
+        unique_together = (('artistid', 'genre'),)
 
 class ArtistFeatures(models.Model):
     artistid = models.CharField(db_column='artistId', primary_key=True, max_length=255)  # Field name made lowercase.
@@ -77,17 +97,6 @@ class ArtistFeatures(models.Model):
     class Meta:
         managed = False
         db_table = 'artist_features'
-
-
-class ArtistGenres(models.Model):
-    artistid = models.CharField(db_column='artistId', primary_key=True, max_length=50)  # Field name made lowercase.
-    genre = models.CharField(max_length=50)
-    updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'artist_genres'
-        unique_together = (('artistid', 'genre'),)
 
 
 class RelatedArtists(models.Model):

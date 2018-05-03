@@ -12,3 +12,18 @@ class ArtistEventAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at"
     )
+
+@admin.register(models.Genre)
+class GenreAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "genre",
+    )
+
+@admin.register(models.ArtistGenre)
+class ArtistGenreAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "genre",
+        "artist",
+    )

@@ -4,22 +4,23 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 
 # Create your models here.
 class Venue(models.Model):
-
     venueid = models.CharField(db_column='venueId', primary_key=True, max_length=255)  # Field name made lowercase.
-    venuename = models.CharField(db_column='venueName', max_length=1024, blank=True, null=True)  # Field name made lowercase.
-    venuecity = models.CharField(db_column='venueCity', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    venuestatecode = models.CharField(db_column='venueStateCode', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    venuecity = models.CharField(db_column='venueCity', max_length=50, blank=True, null=True)  # Field name made lowercase.
     venuecountrycode = models.CharField(db_column='venueCountryCode', max_length=50, blank=True, null=True)  # Field name made lowercase.
-    venuestreet = models.CharField(db_column='venueStreet', max_length=1024, blank=True, null=True)  # Field name made lowercase.
+    venuename = models.CharField(db_column='venueName', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    venuetimezone = models.CharField(db_column='venueTimezone', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    venuestreet = models.CharField(db_column='venueStreet', max_length=255, blank=True, null=True)  # Field name made lowercase.
     venuezipcode = models.CharField(db_column='venueZipCode', max_length=255, blank=True, null=True)  # Field name made lowercase.
     venuelatitude = models.FloatField(db_column='venueLatitude', blank=True, null=True)  # Field name made lowercase.
     venuelongitude = models.FloatField(db_column='venueLongitude', blank=True, null=True)  # Field name made lowercase.
-    venueurl = models.CharField(db_column='venueUrl', max_length=1024, blank=True, null=True)  # Field name made lowercase.
-    venuetimezone = models.CharField(db_column='venueTimezone', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt', auto_now=True, null=True)
+    venueurl = models.CharField(db_column='venueUrl', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    venuestatecode = models.CharField(db_column='venueStateCode', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
+        managed = False
         db_table = 'venues'
+
 
 class Event(models.Model):
     eventid = models.CharField(db_column='eventId', primary_key=True, max_length=255)  # Field name made lowercase.
@@ -40,7 +41,6 @@ class Event(models.Model):
 
     class Meta:
         db_table = 'events'
-
 
 class EventArtists(models.Model):
     eventid = models.CharField(db_column='eventId', primary_key=True, max_length=255)  # Field name made lowercase.

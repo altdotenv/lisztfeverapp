@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from . import models, serializers
 from lisztfeverapp.users import models as user_models
+from lisztfeverapp.artists import models as artist_models
 # Create your views here.
 
 class Event(APIView):
@@ -17,6 +18,22 @@ class Event(APIView):
         serializer = serializers.EventSerializer(found_event)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class EventByArtistId(APIView):
+
+    def get(self, request, artist_id, format=None):
+
+        if artist_id is not None:
+
+            found_event = models.Event.objects.filter(artists__artistid=artist_id)
+            serializer = serializers.EventSerializer(found_event, many=True, context={'request': request})
+
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+        else:
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class PlanEvent(APIView):

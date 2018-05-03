@@ -21,15 +21,11 @@ class Container extends Component {
     }
   }
 
-  componentDidUpdate = (prevProps, prevState) => {
-    const { getFeed } = this.props;
-    console.log(prevProps, this.props)
-  }
-
   componentWillReceiveProps = (nextProps) => {
     if (nextProps.feed) {
       this.setState({
-        loading: false
+        loading: false,
+        feed: nextProps.feed
       });
     }
   }

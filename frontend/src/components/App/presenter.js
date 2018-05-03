@@ -7,6 +7,8 @@ import Auth from "components/Auth";
 import Navigation from "components/Navigation";
 import Feed from "components/Feed";
 import Plan from "components/Plan";
+import Search from "components/Search";
+import Event from "components/Event";
 
 const App = props => [
   props.isLoggedIn ? <Navigation key={1}/> : null,
@@ -21,7 +23,9 @@ App.propTypes = {
 const PrivateRoutes = props => (
   <Switch>
     <Route exact path="/" component={Feed} />
-    <Route exact path="/plan" component={Plan} />
+    <Route path="/plan" component={Plan} />
+    <Route path="/event/artist/:artistId" component={Event} />
+    <Route path="/search/:searchTerm" component={Search} />
   </Switch>
 );
 

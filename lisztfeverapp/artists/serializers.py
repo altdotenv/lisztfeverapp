@@ -3,6 +3,15 @@ from . import models
 # from lisztfeverapp.events import serializers as event_serializers
 # If above line activated, events serializer cannot get artist serializer
 
+class GenreSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Genre
+        fields = (
+            "id",
+            "genre",
+        )
+
 class ArtistSerializer(serializers.ModelSerializer):
 
     # events = event_serializers.EventSerializer(many=True)
@@ -29,6 +38,7 @@ class SmallArtistSerializer(serializers.ModelSerializer):
 class ArtistAllSerializer(serializers.ModelSerializer):
 
     # events = event_serializers.EventSerializer(many=True)
+    genres = GenreSerializer(many=True)
 
     class Meta:
         model = models.Artists
@@ -41,5 +51,18 @@ class ArtistAllSerializer(serializers.ModelSerializer):
             "externalurl",
             "imageurl",
             "updatedat",
+            "genres",
             # "events",
+        )
+
+class ArtistGenreSerializer(serializers.ModelSerializer):
+
+    genres = GenreSerializer(many=True)
+
+    class Meta:
+        model = models.Artists
+        fields = (
+            "artistid",
+            "artistname",
+            "genres",
         )

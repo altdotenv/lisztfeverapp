@@ -5,12 +5,6 @@ import styles from "./styles.scss";
 
 const EventActions = (props, context) => (
   <div className={styles.actions}>
-    <span className={styles.icon}>
-      <Ionicon icon="ios-pricetags-outline" fontSize="28px" color="black"/>
-    </span>
-    <span className={styles.icon}>
-      <Ionicon icon="ios-headset-outline" fontSize="28px" color="black"/>
-    </span>
     <span className={styles.icon} onClick={props.handleCalendarClick}>
       {props.isPlanned ? (
         <Ionicon icon="ios-calendar" fontSize="28px" color="#e83862"/>

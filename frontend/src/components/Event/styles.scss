@@ -1,0 +1,10 @@
+.event {
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column wrap;
+  width: 100%;
+  max-width: $max-page-width;
+  margin: 0 auto;
+}

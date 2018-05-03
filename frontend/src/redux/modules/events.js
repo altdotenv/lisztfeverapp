@@ -3,6 +3,7 @@ import { actionCreators as userActions } from "redux/modules/user";
 // actions
 
 const SET_FEED = "SET_FEED";
+const SET_EVENT_LIST = "SET_EVENT_LIST";
 const PLAN_EVENT = "PLAN_EVENT";
 const UNPLAN_EVENT = "UNPLAN_EVENT";
 const SET_PLAN_LIST = "SET_PLAN_LIST";
@@ -14,6 +15,13 @@ function setFeed(feed){
   return {
     type: SET_FEED,
     feed
+  }
+}
+
+function setEventList(eventList) {
+  return {
+    type: SET_EVENT_LIST,
+    eventList
   }
 }
 
@@ -71,6 +79,34 @@ function getFeed() {
       });
   };
 }
+
+function getEventByArtistId(artistId) {
+  return async (dispatch, getState) => {
+    const { user: { token } } = getState();
+    const eventList = await getEvents(token, artistId);
+    if(eventList === 401){
+      dispatch(userActions.logout());
+    }
+    dispatch(setEventList(eventList));
+  };
+}
+
+function getEvents(token, artistId) {
+  return fetch(`/event/artist/${artistId}/`, {
+    headers: {
+      Authorization: `JWT ${token}`,
+      "Content-Type": "application/json"
+    }
+  })
+    .then(response => {
+      if (response.status === 401) {
+        return 401;
+      }
+      return response.json();
+    })
+    .then(json => json);
+}
+
 
 function planEvent(eventId){
   return (dispatch, getState) => {
@@ -181,6 +217,8 @@ function reducer(state = initialState, action){
   switch(action.type){
     case SET_FEED:
       return applySetFeed(state, action);
+    case SET_EVENT_LIST:
+      return applySetEventList(state, action);
     case PLAN_EVENT:
       return applyPlanEvent(state, action);
     case UNPLAN_EVENT:
@@ -204,28 +242,36 @@ function applySetFeed(state, action){
   }
 };
 
+function applySetEventList(state, action){
+  const { eventList } = action;
+  return {
+    ...state,
+    eventList
+  }
+}
+
 function applyPlanEvent(state, action){
   const { eventId } = action;
-  const { feed } = state;
-  const updatedFeed = feed.map(event => {
+  const { eventList } = state;
+  const updatedEventList = eventList.map(event => {
     if(event.eventid === eventId) {
       return {...event, is_planned: true}
     }
     return event
   });
-  return {...state, feed: updatedFeed};
+  return {...state, eventList: updatedEventList};
 }
 
 function applyUnplanEvent(state, action){
   const { eventId } = action;
-  const { feed } = state;
-  const updatedFeed = feed.map(event => {
+  const { eventList } = state;
+  const updatedEventList = eventList.map(event => {
     if(event.eventid === eventId) {
       return {...event, is_planned: false}
     }
     return event
   });
-  return {...state, feed: updatedFeed};
+  return {...state, eventList: updatedEventList};
 }
 
 function applySetPlanList(state, action){
@@ -263,6 +309,7 @@ function applyUnplanList(state, action){
 // exports
 const actionCreators = {
   getFeed,
+  getEventByArtistId,
   planEvent,
   unplanEvent,
   getEventPlans,
