@@ -3,8 +3,8 @@ from rest_auth.registration.serializers import RegisterSerializer
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
 from . import models
-from lisztfeverapp.artists import serializers as artist_serializers
 from lisztfeverapp.events import serializers as event_serializers
+# from lisztfeverapp.artists import serializers as artist_serializers
 
 class PlanSerializer(serializers.ModelSerializer):
 
@@ -15,26 +15,25 @@ class PlanSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "event",
-            "created_at"
         )
 
-class FollowArtistSerializer(serializers.ModelSerializer):
-
-    artist = artist_serializers.ArtistSerializer()
-
-    class Meta:
-        model = models.FollowArtist
-        fields = (
-            "source",
-            "classification",
-            "artist",
-            "created_at"
-        )
+# class FollowArtistSerializer(serializers.ModelSerializer):
+#
+#     artist = artist_serializers.ArtistSerializer()
+#
+#     class Meta:
+#         model = models.FollowArtist
+#         fields = (
+#             "source",
+#             "classification",
+#             "artist",
+#             "created_at"
+#         )
 
 class UserSerializer(serializers.ModelSerializer):
 
     user_plans = PlanSerializer(many=True)
-    user_follow_artists = FollowArtistSerializer(many=True)
+    # user_follow_artists = FollowArtistSerializer(many=True)
 
     class Meta:
         model = models.User
@@ -44,26 +43,9 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'profile_image',
             "event_count",
-            "following_count",
             'user_plans',
-            'user_follow_artists',
-        )
-
-class ListUserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.User
-        fields = (
-            "id",
-            "username",
-            "name",
-            "first_name",
-            "last_name",
-            "email",
-            "event_count",
-            "following_count",
-            "user_events",
-            "following_artists"
+            # "following_count",
+            # 'user_follow_artists',
         )
 
 class SignUpSerializer(RegisterSerializer):

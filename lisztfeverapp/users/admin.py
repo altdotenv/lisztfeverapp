@@ -47,19 +47,18 @@ class PlanAdmin(admin.ModelAdmin):
     list_display = (
         "user_id",
         "event_id",
-        "created_at",
         "updated_at",
     )
 
-@admin.register(models.FollowArtist)
-class FollowArtistAdmin(admin.ModelAdmin):
-
-    list_display = (
-        "user_id",
-        "artist_id",
-        "source",
-        "classification",
-        "follow",
-        "created_at",
-        "updated_at",
-    )
+# @admin.register(models.FollowArtist)
+# class FollowArtistAdmin(admin.ModelAdmin):
+#
+#     list_display = (
+#         "user_id",
+#         "artist_id",
+#         "source",
+#         "classification",
+#         "follow",
+#         "created_at",
+#         "updated_at",
+#     )

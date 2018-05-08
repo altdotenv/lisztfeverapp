@@ -4,8 +4,7 @@ from lisztfeverapp.events import models as event_models
 # Create your models here.
 class TimeStampedModel(models.Model):
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(db_column='updatedAt', auto_now=True, blank=True, null=True)
 
     class Meta:
         abstract = True
@@ -32,14 +31,19 @@ class Artists(models.Model):
 
 class ArtistGenre(TimeStampedModel):
 
-    artist = models.ForeignKey(Artists, db_column='artistId', on_delete=models.CASCADE, null=True)
-    genre = models.ForeignKey(Genre, db_column='genre', on_delete=models.CASCADE)
+    artist = models.ForeignKey(Artists, db_column='artistId', on_delete=models.CASCADE, max_length=50)
+    genre = models.ForeignKey(Genre, db_column='genre', on_delete=models.CASCADE, max_length=50)
 
 
 class ArtistEvent(TimeStampedModel):
 
     artist = models.ForeignKey(Artists, db_column='artistId', on_delete=models.CASCADE)
     event = models.ForeignKey(event_models.Event, db_column='eventId', on_delete=models.CASCADE)
+    artistname = models.CharField(db_column='artistName', max_length=255, blank=True, null=True)
+    attractionid = models.CharField(db_column='attractionId', max_length=255, blank=True, null=True)
+
+    class Meta:
+        unique_together = (('artist', 'event'),)
 
 class AlbumTracks(models.Model):
     albumid = models.CharField(db_column='albumId', primary_key=True, max_length=255)  # Field name made lowercase.

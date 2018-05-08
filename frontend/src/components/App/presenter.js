@@ -9,6 +9,7 @@ import Feed from "components/Feed";
 import Plan from "components/Plan";
 import Search from "components/Search";
 import Event from "components/Event";
+import SignedRequest from "components/SignedRequest";
 
 const App = props => [
   props.isLoggedIn ? <Navigation key={1}/> : null,
@@ -32,7 +33,7 @@ const PrivateRoutes = props => (
 const PublicRoutes = props => (
   <Switch>
     <Route exact path="/" component={Auth} />
-    <Route exact path="/forgot" render={() => "password"} />
+    <Route exact path="/signed_request" component={SignedRequest} />
   </Switch>
 );
 

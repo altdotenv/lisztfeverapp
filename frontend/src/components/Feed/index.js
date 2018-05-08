@@ -3,16 +3,18 @@ import { actionCreators as eventActions } from "redux/modules/events";
 import Container from "./container";
 
 const mapStateToProps = (state, ownProps) => {
-  const { events: { feed } } = state;
+  const { events: { feed, total_pages }, routing: { location } } = state;
   return {
-    feed
+    feed,
+    total_pages,
+    location
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    getFeed: () => {
-      dispatch(eventActions.getFeed());
+    getFeed: page => {
+      dispatch(eventActions.getFeed(page));
     }
   }
 }

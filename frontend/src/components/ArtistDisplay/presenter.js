@@ -60,7 +60,7 @@ ArtistDisplay.propTypes = {
         genre: PropTypes.string,
       })
     )
-  }).isRequired
+  })
 };
 
 export default ArtistDisplay;

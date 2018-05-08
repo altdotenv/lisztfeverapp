@@ -1,7 +1,7 @@
 // imports
 import { actionCreators as userActions } from "redux/modules/user";
-// actions
 
+// actions
 const SET_FEED = "SET_FEED";
 const SET_EVENT_LIST = "SET_EVENT_LIST";
 const PLAN_EVENT = "PLAN_EVENT";
@@ -11,10 +11,11 @@ const PLAN_LIST = "PLAN_LIST";
 const UNPLAN_LIST = "UNPLAN_LIST";
 
 // action creators
-function setFeed(feed){
+function setFeed(json){
   return {
     type: SET_FEED,
-    feed
+    total_pages: json.total_pages,
+    feed: json.data
   }
 }
 
@@ -60,12 +61,13 @@ function doUnplanList(eventId){
 }
 
 // api actions
-function getFeed() {
+function getFeed(page) {
   return (dispatch, getState) => {
     const { user: { token } } = getState();
-    fetch("/user/events/", {
+    fetch(`/user/?page=${page}`, {
       headers: {
-        Authorization: `JWT ${token}`
+        Authorization: `JWT ${token}`,
+        "Content-Type": "application/json"
       }
     })
       .then(response => {
@@ -73,6 +75,9 @@ function getFeed() {
           dispatch(userActions.logout());
         }
         return response.json();
+      })
+      .then(response => {
+        return response
       })
       .then(json => {
         dispatch(setFeed(json));
@@ -210,7 +215,9 @@ function unplanList(eventId){
 
 
 // initial state
-const initialState = {};
+const initialState = {
+  feed:[]
+};
 
 // reducer
 function reducer(state = initialState, action){
@@ -235,11 +242,12 @@ function reducer(state = initialState, action){
 }
 // reducer functions
 function applySetFeed(state, action){
-  const { feed } = action;
-  return {
-    ...state,
-    feed
+  const { total_pages, feed } = action;
+  const updatedFeed = state.feed.concat(feed)
+  if (updatedFeed === state.feed){
+    return {...state, feed: state.feed, total_pages: total_pages}
   }
+  return {...state, feed: updatedFeed, total_pages: total_pages}
 };
 
 function applySetEventList(state, action){

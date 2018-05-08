@@ -9,7 +9,6 @@ class ArtistEventAdmin(admin.ModelAdmin):
     list_display = (
         "artist",
         "event",
-        "created_at",
         "updated_at"
     )
 

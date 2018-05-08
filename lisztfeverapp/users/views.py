@@ -1,50 +1,51 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.core.paginator import Paginator
 from .models import User #cookiecutter default
 from . import models, serializers
+from lisztfeverapp.artists import models as artist_models
 from lisztfeverapp.events import serializers as event_serializers
+from lisztfeverapp.artists import serializers as artist_serializers
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
-
+import base64
+import hashlib
+import hmac
+import json
 
 class UserMain(APIView):
 
-    def get(self, request, format=None): #format=None is json format
-
-        user_id = request.user.id
-        user = models.User.objects.filter(id=user_id)
-        serializer = serializers.UserSerializer(user, many=True)
-
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-class ListAllUser(APIView):
-
     def get(self, request, format=None):
 
-        all_users = models.User.objects.all()
-        serializer = serializers.ListUserSerializer(all_users, many=True)
+        page = request.query_params.get('page', None)
 
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        if page:
 
-class UserEvent(APIView):
+            try:
+                found_artist = artist_models.Artists.objects.all()
+            except artist_models.Artists.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
-    def get(self, request, format=None):
+            paginator = Paginator(found_artist, 10)
 
-        user = request.user
-        user_follow_artists = user.user_follow_artists.all()
+            total_pages = paginator.num_pages
 
-        user_events = []
-        for artist in user_follow_artists:
+            artists = paginator.get_page(page)
 
-            events = artist.artist.events.all()
-            for event in events:
-                if event != False:
-                    user_events.append(event)
+            serializer = artist_serializers.ArtistAllSerializer(artists, many=True)
 
-        serializer = event_serializers.EventSerializer(user_events, many=True, context={'request': request})
+            results = {}
 
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+            results.update({"total_pages": total_pages})
+
+            results.update({"data": serializer.data})
+
+            return Response(data=results, status=status.HTTP_200_OK)
+
+        else:
+
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class UserPlan(APIView):
 
@@ -68,3 +69,11 @@ class UserSetting(APIView):
 
 class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
+
+class SignedRequest(APIView):
+
+    def post(self, request, format=None):
+
+        signed_request = dict(request.POST)['signed_request'][0]
+        data = parse_signed_request(signed_request, "d1b796668ef444802a7f4dcb910b0ca1")
+        print (data)

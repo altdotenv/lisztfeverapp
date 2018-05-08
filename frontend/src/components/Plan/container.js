@@ -10,14 +10,13 @@ class Container extends Component {
     getEventPlans: PropTypes.func.isRequired,
     planList: PropTypes.array
   };
-  
+
   componentDidMount(){
     const { getEventPlans } = this.props;
     getEventPlans();
   }
 
   componentWillReceiveProps = nextProps => {
-    console.log(this.props.history)
     if (nextProps.planList) {
       this.setState({
         loading: false,
