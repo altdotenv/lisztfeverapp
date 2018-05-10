@@ -36,7 +36,7 @@ class MyUserAdmin(AuthUserAdmin):
     add_form = MyUserCreationForm
     fieldsets = (
         ("User Profile", {
-         "fields": ("name", "profile_image", "gender")}),
+         "fields": ("name", "profile_pic", "gender")}),
     ) + AuthUserAdmin.fieldsets
     list_display = ("username", "name", "is_superuser")
     search_fields = ["name"]
@@ -49,16 +49,3 @@ class PlanAdmin(admin.ModelAdmin):
         "event_id",
         "updated_at",
     )
-
-# @admin.register(models.FollowArtist)
-# class FollowArtistAdmin(admin.ModelAdmin):
-#
-#     list_display = (
-#         "user_id",
-#         "artist_id",
-#         "source",
-#         "classification",
-#         "follow",
-#         "created_at",
-#         "updated_at",
-#     )

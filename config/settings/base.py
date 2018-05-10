@@ -260,7 +260,11 @@ ACCOUNT_LOGOUT_ON_GET = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 CORS_ORIGIN_ALLOW_ALL = True
 JWT_AUTH = {
-    'JWT_VERIFY_EXPIRATION':False
+    'JWT_VERIFY_EXPIRATION':False,
+    'JWT_ENCODE_HANDLER':
+    'rest_framework_jwt.utils.jwt_encode_handler',
+    'JWT_PAYLOAD_HANDLER':
+    'rest_framework_jwt.utils.jwt_payload_handler'
 }
 
 SOCIALACCOUNT_PROVIDERS = {

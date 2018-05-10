@@ -61,6 +61,7 @@ function doUnplanList(eventId){
 }
 
 // api actions
+
 function getFeed(page) {
   return (dispatch, getState) => {
     const { user: { token } } = getState();
@@ -212,6 +213,7 @@ function unplanList(eventId){
     });
   };
 }
+
 
 
 // initial state

@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
-
 # Create your models here.
 class Venue(models.Model):
     venueid = models.CharField(db_column='venueId', primary_key=True, max_length=255)  # Field name made lowercase.

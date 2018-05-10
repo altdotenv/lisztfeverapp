@@ -1,4 +1,6 @@
 // imports
+import { push } from "react-router-redux";
+import { actionCreators as eventActions } from "redux/modules/events";
 
 // actions
 const SAVE_TOKEN = "SAVE_TOKEN";
@@ -16,7 +18,6 @@ function logout() {
     type: LOGOUT
   }
 }
-
 //API actions
 function facebookLogin(access_token){
   return function(dispatch){
@@ -37,6 +38,48 @@ function facebookLogin(access_token){
     })
     .catch(err => console.log(err));
   };
+}
+function eventSignedRequest(signed_request, eventId){
+  return async (dispatch, getState) => {
+    const tokenBySignedRequest = await facebookSignedRequest(signed_request);
+    if(tokenBySignedRequest === 401){
+      console.log("Authorization error")
+    }
+    dispatch(saveToken(tokenBySignedRequest.token))
+    const { user: { token } } = getState();
+    fetch(`/event/${eventId}/plan/`, {
+      method: "POST",
+      headers: {
+        Authorization: `JWT ${token}`
+      }
+    })
+    .then(response => {
+      if(response.status === 401){
+        dispatch(logout());
+      } else if (!response.ok){
+        dispatch(push("/"));
+      }
+    });
+  }
+}
+
+function facebookSignedRequest(signed_request){
+  return fetch("/user/signed_request/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      signed_request
+    })
+  })
+  .then(response => {
+    if(response === 401){
+      return 401;
+    }
+    return response.json()
+  })
+  .catch(err => console.log(err));
 }
 
 function usernameLogin(username, password){
@@ -128,7 +171,8 @@ const actionCreators = {
   facebookLogin,
   usernameLogin,
   createAccount,
-  logout
+  logout,
+  eventSignedRequest
 };
 
 export { actionCreators }

@@ -62,3 +62,5 @@ INSTALLED_APPS += ['django_extensions']  # noqa F405
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+FB_APP_SECRET = env('FB_APP_SECRET', default="d1b796668ef444802a7f4dcb910b0ca1")

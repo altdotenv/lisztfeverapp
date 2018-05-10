@@ -1,17 +1,43 @@
 from django.db import models
 from lisztfeverapp.events import models as event_models
-
 # Create your models here.
-class TimeStampedModel(models.Model):
 
-    updated_at = models.DateTimeField(db_column='updatedAt', auto_now=True, blank=True, null=True)
+class UnixTimestampField(models.DateTimeField):
+    """UnixTimestampField: creates a DateTimeField that is represented on the
+    database as a TIMESTAMP field rather than the usual DATETIME field.
+    """
+    def __init__(self, null=False, blank=False, **kwargs):
+        super(UnixTimestampField, self).__init__(**kwargs)
+        # default for TIMESTAMP is NOT NULL unlike most fields, so we have to
+        # cheat a little:
+        self.blank, self.isnull = blank, null
+        self.null = True # To prevent the framework from shoving in "not null".
 
-    class Meta:
-        abstract = True
+    def db_type(self, connection):
+        typ=['TIMESTAMP']
+        # See above!
+        if self.isnull:
+            typ += ['NULL']
+        if self.auto_created:
+            typ += ['default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP']
+        return ' '.join(typ)
 
-class Genre(TimeStampedModel):
+    def to_python(self, value):
+        if isinstance(value, int):
+            return datetime.fromtimestamp(value)
+        else:
+            return models.DateTimeField.to_python(self, value)
+
+    def get_db_prep_value(self, value, connection, prepared=False):
+        if value==None:
+            return None
+        # Use '%Y%m%d%H%M%S' for MySQL < 4.1
+        return strftime('%Y-%m-%d %H:%M:%S',value.timetuple())
+
+class Genre(models.Model):
 
     genre = models.CharField(max_length=50)
+    updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
 
 class Artists(models.Model):
     artistid = models.CharField(db_column='artistId', primary_key=True, max_length=255)  # Field name made lowercase.
@@ -29,18 +55,19 @@ class Artists(models.Model):
         db_table = 'artists'
         ordering = ['-popularity']
 
-class ArtistGenre(TimeStampedModel):
+class ArtistGenre(models.Model):
 
     artist = models.ForeignKey(Artists, db_column='artistId', on_delete=models.CASCADE, max_length=50)
     genre = models.ForeignKey(Genre, db_column='genre', on_delete=models.CASCADE, max_length=50)
+    updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
 
-
-class ArtistEvent(TimeStampedModel):
+class ArtistEvent(models.Model):
 
     artist = models.ForeignKey(Artists, db_column='artistId', on_delete=models.CASCADE)
     event = models.ForeignKey(event_models.Event, db_column='eventId', on_delete=models.CASCADE)
     artistname = models.CharField(db_column='artistName', max_length=255, blank=True, null=True)
     attractionid = models.CharField(db_column='attractionId', max_length=255, blank=True, null=True)
+    updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
 
     class Meta:
         unique_together = (('artist', 'event'),)

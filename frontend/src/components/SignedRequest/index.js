@@ -1,23 +1,22 @@
-import React from "react";
+import { connect } from "react-redux";
 import { actionCreators as userActions } from "redux/modules/user";
+import { actionCreators as eventActions } from "redux/modules/events";
+import Container from "./container";
 
-const SignedRequest = () => {
-  (function(d, s, id){
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {return;}
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/messenger.Extensions.js";
-  fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'Messenger'));
-
-  MessengerExtensions.getContext('180090909386009',
-    function success(thread_context){
-      console.log(thread_context.signed_request)
-    },
-    function error(err){
-      console.log(err)
-    }
-  );
+const mapStateToProps = (state, ownProps) => {
+  const { user: { isLoggedIn } } = state;
+  return {
+    isLoggedIn
+  }
 }
 
-export default SignedRequest;
+const mapDispatchToProps = (dispatch, ownProps) => {
+  const { match: { params: { eventId } } } = ownProps;
+  return {
+    eventSignedRequest: signed_request => {
+      dispatch(userActions.eventSignedRequest(signed_request, eventId))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Container);

@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_jwt.settings import api_settings
+from django.conf import settings
 from django.core.paginator import Paginator
 from .models import User #cookiecutter default
 from . import models, serializers
@@ -9,9 +11,7 @@ from lisztfeverapp.events import serializers as event_serializers
 from lisztfeverapp.artists import serializers as artist_serializers
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
-import base64
-import hashlib
-import hmac
+from facepy import SignedRequest
 import json
 
 class UserMain(APIView):
@@ -70,10 +70,29 @@ class UserSetting(APIView):
 class FacebookLogin(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
 
-class SignedRequest(APIView):
+class FacebookSignedRequest(APIView):
+
+    permission_classes = []
 
     def post(self, request, format=None):
 
-        signed_request = dict(request.POST)['signed_request'][0]
-        data = parse_signed_request(signed_request, "d1b796668ef444802a7f4dcb910b0ca1")
-        print (data)
+        try:
+            signed_request = json.loads(request.body)['signed_request']
+            signed_request_data = SignedRequest.parse(signed_request, settings.FB_APP_SECRET)
+        except:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            user = models.User.objects.get(username=signed_request_data['psid'])
+        except models.User.DoesNotExist:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
+
+        token = {'token':token}
+        
+        return Response(data=token, status=status.HTTP_200_OK)
