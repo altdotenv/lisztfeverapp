@@ -11,7 +11,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY', default='YgeFf8iR3s46FGckkc4Du00Am9p6TFEGB
 ALLOWED_HOSTS = [
     "localhost",
     "0.0.0.0",
-    "127.0.0.1",
+    "127.0.0.1"
 ]
 
 # CACHES
