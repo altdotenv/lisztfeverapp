@@ -9,9 +9,36 @@
   .column {
     display: flex;
     align-items: center;
-    .row {
-      display: flex;
-      flex-direction: row;
+    .big-avatar {
+      min-width: 55px;
+      width: 55px;
+      border-radius: 50%;
     }
+    .event {
+      margin: 0 12px;
+      .event-status {
+        color: red;
+        line-height: 20px;
+        font-weight: 600;
+        text-transform: capitalize;
+      }
+      .event-name {
+        color: black;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 5px;
+      }
+      .sub-info {
+        font-size: 12px;
+        line-height: 16px;
+        color: $dark-grey;
+      }
+    }
+    .button {
+      @include pinkButton();
+    }
+  }
+  &:last-child{
+    border: 0;
   }
 }

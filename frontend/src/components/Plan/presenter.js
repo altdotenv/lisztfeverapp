@@ -13,13 +13,13 @@ const Plan = props => {
 };
 
 const LoadingPlan = props => (
-  <div className={styles.planList}>
+  <div className={styles.loading}>
     <Loading />
   </div>
 )
 
 const RenderPlan = props => (
-  <div className={styles.planList}>
+  <div className={styles.plan}>
     {props.planList.map(plan => (
       <PlanDisplay plan={plan} key={plan.eventid} />
     ))}

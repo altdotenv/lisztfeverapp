@@ -68,3 +68,26 @@ $iphone6plus-width: 450px;
     opacity: 0.7;
   }
 }
+@mixin pinkButton() {
+  -webkit-appearance: none;
+  border-radius: 3px;
+  background-color: $main-pink;
+  color: white;
+  font-weight: 400;
+  border: 0;
+  font-size: $normal-font-size;
+  line-height: 26px;
+  cursor: pointer;
+  width: 100%;
+  padding: 2px 7px;
+  i {
+    margin-right: 5px;
+  }
+  &:focus,
+  &:active {
+    outline: none;
+  }
+  &:active {
+    opacity: 0.7;
+  }
+}

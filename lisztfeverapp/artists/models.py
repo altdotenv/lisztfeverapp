@@ -46,13 +46,12 @@ class Artists(models.Model):
     popularity = models.IntegerField(blank=True, null=True)
     followers = models.IntegerField(blank=True, null=True)
     externalurl = models.CharField(db_column='externalUrl', max_length=1024, blank=True, null=True)  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
+    updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
     imageurl = models.CharField(db_column='imageUrl', max_length=255, blank=True, null=True)  # Field name made lowercase.
     events = models.ManyToManyField(event_models.Event, through='ArtistEvent')
     genres = models.ManyToManyField(Genre, through='ArtistGenre')
 
     class Meta:
-        db_table = 'artists'
         ordering = ['-popularity']
 
 class ArtistGenre(models.Model):

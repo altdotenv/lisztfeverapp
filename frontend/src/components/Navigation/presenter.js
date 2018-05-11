@@ -8,9 +8,7 @@ const Navigation = (props, context) => (
   <div className={styles.navigation}>
     <div className={styles.inner}>
       <div className={styles.column}>
-        <Link to="/">
-          <img src={require("images/logo.png")} className={styles.logo} alt={context.t("Logo")}/>
-        </Link>
+        <img src={require("images/logo.png")} className={styles.logo} alt={context.t("Logo")}/>
       </div>
       <div className={styles.column}>
         <form onSubmit={props.onSubmit}>

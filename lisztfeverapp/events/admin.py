@@ -20,7 +20,7 @@ class EventAdmin(admin.ModelAdmin):
         "maxprice",
         "minprice",
         "eventstartlocaltime",
-        "updatedat",
+        "updated_at",
         "venue"
     )
 

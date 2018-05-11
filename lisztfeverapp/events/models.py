@@ -2,6 +2,38 @@ from django.db import models
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
 # Create your models here.
+class UnixTimestampField(models.DateTimeField):
+    """UnixTimestampField: creates a DateTimeField that is represented on the
+    database as a TIMESTAMP field rather than the usual DATETIME field.
+    """
+    def __init__(self, null=False, blank=False, **kwargs):
+        super(UnixTimestampField, self).__init__(**kwargs)
+        # default for TIMESTAMP is NOT NULL unlike most fields, so we have to
+        # cheat a little:
+        self.blank, self.isnull = blank, null
+        self.null = True # To prevent the framework from shoving in "not null".
+
+    def db_type(self, connection):
+        typ=['TIMESTAMP']
+        # See above!
+        if self.isnull:
+            typ += ['NULL']
+        if self.auto_created:
+            typ += ['default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP']
+        return ' '.join(typ)
+
+    def to_python(self, value):
+        if isinstance(value, int):
+            return datetime.fromtimestamp(value)
+        else:
+            return models.DateTimeField.to_python(self, value)
+
+    def get_db_prep_value(self, value, connection, prepared=False):
+        if value==None:
+            return None
+        # Use '%Y%m%d%H%M%S' for MySQL < 4.1
+        return strftime('%Y-%m-%d %H:%M:%S',value.timetuple())
+
 class Venue(models.Model):
     venueid = models.CharField(db_column='venueId', primary_key=True, max_length=255)  # Field name made lowercase.
     venuecity = models.CharField(db_column='venueCity', max_length=50, blank=True, null=True)  # Field name made lowercase.
@@ -35,11 +67,9 @@ class Event(models.Model):
     maxprice = models.FloatField(db_column='maxPrice', blank=True, null=True)  # Field name made lowercase.
     minprice = models.FloatField(db_column='minPrice', blank=True, null=True)  # Field name made lowercase.
     eventstartlocaltime = models.TimeField(db_column='eventStartLocalTime', blank=True, null=True)  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
+    updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
     venue = models.ForeignKey(Venue, db_column='venueId', on_delete=models.CASCADE, null=True)
 
-    class Meta:
-        db_table = 'events'
 
 class EventArtists(models.Model):
     eventid = models.CharField(db_column='eventId', primary_key=True, max_length=255)  # Field name made lowercase.

@@ -3,11 +3,14 @@ import PropTypes from "prop-types";
 import SignedRequest from "./presenter";
 
 class Container extends Component {
+  state = {
+    loading: true
+  }
   static propTypes = {
-    eventSignedRequest: PropTypes.func.isRequired
+    redirectSignedRequest: PropTypes.func.isRequired
   }
   componentDidMount() {
-    const { eventSignedRequest } = this.props;
+    const { redirectSignedRequest } = this.props;
     window.fbAsyncInit = function() {
         window.FB.init({
             appId      : '180090909386009',
@@ -31,7 +34,7 @@ class Container extends Component {
     window.extAsyncInit = function() {
       window.MessengerExtensions.getContext('180090909386009',
         function success(thread_context){
-          eventSignedRequest(thread_context['signed_request'])
+          redirectSignedRequest(thread_context['signed_request'])
         },
         function error(err){
           console.log(err)
@@ -39,11 +42,8 @@ class Container extends Component {
       );
     };
   }
-  componentWillReceiveProps = nextProps => {
-    console.log(nextProps)
-  }
   render(){
-    return <p>signed request</p>
+    return <SignedRequest {...this.state} />
   }
 }
 

@@ -5,7 +5,7 @@ import styles from "./styles.scss";
 const Footer = (props, context) => (
   <footer className={styles.footer}>
     <div className={styles.column}>
-      <span className={styles.copyright}>&copy; 2018 Lisztfever</span>
+      <span className={styles.copyright}>&copy; 2018 AREHA.co</span>
     </div>
   </footer>
 )

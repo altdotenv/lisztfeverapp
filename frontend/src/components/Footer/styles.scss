@@ -7,7 +7,7 @@
   font-weight: 600;
   text-transform: uppercase;
   font-size: $small-font-size;
-  margin: 55px auto;
+  margin: 35px auto;
   flex-wrap: wrap;
   @include breakpoint("phone-tablet") {
     justify-content: center;

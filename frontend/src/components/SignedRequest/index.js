@@ -1,22 +1,14 @@
 import { connect } from "react-redux";
 import { actionCreators as userActions } from "redux/modules/user";
-import { actionCreators as eventActions } from "redux/modules/events";
 import Container from "./container";
 
-const mapStateToProps = (state, ownProps) => {
-  const { user: { isLoggedIn } } = state;
-  return {
-    isLoggedIn
-  }
-}
-
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { match: { params: { eventId } } } = ownProps;
+  const { match: { params: { path } } } = ownProps;
   return {
-    eventSignedRequest: signed_request => {
-      dispatch(userActions.eventSignedRequest(signed_request, eventId))
+    redirectSignedRequest: signed_request => {
+      dispatch(userActions.redirectSignedRequest(signed_request, path))
     }
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Container);
+export default connect(null, mapDispatchToProps)(Container);

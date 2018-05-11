@@ -1,6 +1,5 @@
 // imports
 import { push } from "react-router-redux";
-import { actionCreators as eventActions } from "redux/modules/events";
 
 // actions
 const SAVE_TOKEN = "SAVE_TOKEN";
@@ -39,27 +38,16 @@ function facebookLogin(access_token){
     .catch(err => console.log(err));
   };
 }
-function eventSignedRequest(signed_request, eventId){
+
+function redirectSignedRequest(signed_request, path){
   return async (dispatch, getState) => {
     const tokenBySignedRequest = await facebookSignedRequest(signed_request);
     if(tokenBySignedRequest === 401){
       console.log("Authorization error")
+      dispatch(push("/error"))
     }
-    dispatch(saveToken(tokenBySignedRequest.token))
-    const { user: { token } } = getState();
-    fetch(`/event/${eventId}/plan/`, {
-      method: "POST",
-      headers: {
-        Authorization: `JWT ${token}`
-      }
-    })
-    .then(response => {
-      if(response.status === 401){
-        dispatch(logout());
-      } else if (!response.ok){
-        dispatch(push("/"));
-      }
-    });
+    dispatch(saveToken(tokenBySignedRequest.token, true))
+    dispatch(push(`/${path}`))
   }
 }
 
@@ -172,7 +160,7 @@ const actionCreators = {
   usernameLogin,
   createAccount,
   logout,
-  eventSignedRequest
+  redirectSignedRequest
 };
 
 export { actionCreators }
