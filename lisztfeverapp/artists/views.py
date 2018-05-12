@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from . import models, serializers
 from lisztfeverapp.users import models as user_models
-from django.db import connection
-cursor = connection.cursor()
+# from django.db import connection
+# cursor = connection.cursor()
 # Create your views here.
 
 class Artist(APIView):
