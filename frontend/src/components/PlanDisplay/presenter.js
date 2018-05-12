@@ -9,16 +9,17 @@ const PlanDisplay = (props, context) => (
     <div className={styles.column}>
       <img
         src={props.plan.artists.length > 0 ? props.plan.artists[0].imageurl : require("images/noPhoto.jpg")}
-        art={context.t("artist image")}
+        alt={props.plan.artists.length > 0 ? props.plan.artists[0].artistname : context.t("No artist")}
         className={styles.bigAvatar}
       />
     </div>
     <div className={styles.column}>
       <a href={`${props.plan.primaryeventurl}`} style={{ textDecoration: 'none'}}>
         <div className={styles.event}>
-          {props.plan.eventstatus === 'onsale' ? null : (
-            <div className={styles.eventStatus}>{props.plan.eventstatus}</div>
-          )}
+          {props.plan.eventstatus ? (
+              <div className={styles.eventStatus}>{props.plan.eventstatus}</div>
+            ) : null
+          }
           <div className={styles.eventName}>{props.plan.eventname}</div>
           <div className={styles.subInfo}>
             {props.plan.venue ? (

@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_jwt.settings import api_settings
+from django.contrib.humanize.templatetags.humanize import naturalday
 from django.conf import settings
 from django.core.paginator import Paginator
 from .models import User #cookiecutter default
@@ -13,6 +14,7 @@ from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
 from facepy import SignedRequest
 import json
+from datetime import date, timedelta
 
 class UserMain(APIView):
 
@@ -52,7 +54,7 @@ class UserPlan(APIView):
     def get(self, request, format=None):
 
         user = request.user
-        user_plan = user.user_events.all()
+        user_plan = user.user_events.all().filter(eventstartlocaldate__gte=date.today())        
         serializer = event_serializers.EventSerializer(user_plan, many=True, context={'request': request})
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -94,5 +96,5 @@ class FacebookSignedRequest(APIView):
         token = jwt_encode_handler(payload)
 
         token = {'token':token}
-        
+
         return Response(data=token, status=status.HTTP_200_OK)

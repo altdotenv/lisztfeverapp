@@ -70,6 +70,8 @@ class Event(models.Model):
     updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
     venue = models.ForeignKey(Venue, db_column='venueId', on_delete=models.CASCADE, null=True)
 
+    class Meta:
+        ordering = ['eventstartlocaldate']
 
 class EventArtists(models.Model):
     eventid = models.CharField(db_column='eventId', primary_key=True, max_length=255)  # Field name made lowercase.

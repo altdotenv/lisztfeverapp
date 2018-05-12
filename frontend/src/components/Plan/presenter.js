@@ -4,11 +4,15 @@ import styles from "./styles.scss";
 import Loading from "components/Loading";
 import PlanDisplay from "components/PlanDisplay";
 
-const Plan = props => {
+const Plan = (props, context) => {
   if (props.loading) {
     return <LoadingPlan />;
-  } else if (props.planList) {
+  } else if (!props.loading && props.planList.length > 0) {
     return <RenderPlan {...props} />;
+  } else if (!props.loading && props.planList.length < 1) {
+    return (
+      <NoEvents text={context.t("No Events :(")} />
+    )
   }
 };
 
@@ -25,6 +29,13 @@ const RenderPlan = props => (
     ))}
   </div>
 )
+
+const NoEvents = props => <span className={styles.noEvents}>{props.text}</span>
+
+Plan.contextTypes = {
+  t: PropTypes.func.isRequired
+}
+
 
 Plan.propTypes = {
   loading: PropTypes.bool.isRequired,
