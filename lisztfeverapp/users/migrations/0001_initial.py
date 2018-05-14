@@ -49,13 +49,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FollowArtist',
             fields=[
+                ('artist', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='artists.Artists')),
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('source', models.CharField(max_length=64, null=True)),
                 ('classification', models.CharField(max_length=64, null=True)),
                 ('follow', models.IntegerField(null=True)),
-                ('artist', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='artists.Artists')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_follow_artists', to=settings.AUTH_USER_MODEL)),
             ],
             options={
