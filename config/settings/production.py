@@ -20,6 +20,10 @@ DATABASES = {
         'PASSWORD': env('RDS_DB_PASSWORD'),
         'HOST': env('RDS_DB_HOSTNAME'),
         'PORT': env('RDS_DB_PORT'),
+        'OPTIONS': {
+            'charset': 'utf8',
+            'use_unicode': True,
+        },
     }
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True  # noqa F405
