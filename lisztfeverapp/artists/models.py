@@ -60,6 +60,9 @@ class ArtistGenre(models.Model):
     genre = models.ForeignKey(Genre, db_column='genre', on_delete=models.CASCADE, max_length=50)
     updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
 
+    class Meta:
+        unique_together = (('artist', 'genre'),)
+
 class ArtistEvent(models.Model):
 
     artist = models.ForeignKey(Artists, db_column='artistId', on_delete=models.CASCADE)

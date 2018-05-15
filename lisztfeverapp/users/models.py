@@ -68,9 +68,10 @@ class User(AbstractUser):
 
 class Plan(models.Model):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_plans') #Without related_name default is plan_set
-    event = models.ForeignKey(event_models.Event, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, db_column='userId', on_delete=models.CASCADE, related_name='user_plans') #Without related_name default is plan_set
+    event = models.ForeignKey(event_models.Event, db_column='eventId', on_delete=models.CASCADE)
     updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
 
     class Meta:
         order_with_respect_to = 'event'
+        unique_together = (('user', 'event'),)

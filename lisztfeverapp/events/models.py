@@ -48,10 +48,6 @@ class Venue(models.Model):
     venuestatecode = models.CharField(db_column='venueStateCode', max_length=50, blank=True, null=True)  # Field name made lowercase.
     updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
 
-    class Meta:
-        managed = False
-        db_table = 'venues'
-
 
 class Event(models.Model):
     eventid = models.CharField(db_column='eventId', primary_key=True, max_length=255)  # Field name made lowercase.
