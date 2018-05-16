@@ -13,6 +13,6 @@ def user_signed_up(request, user, **kwargs):
         gender = social_account.extra_data.get('gender', None)
         user.gender = gender
         avatar = social_account.get_avatar_url()
-        user.profile_image.save(avatar)
+        user.profile_pic.save(avatar)
         user.name = user.get_full_name()
     user.save()
