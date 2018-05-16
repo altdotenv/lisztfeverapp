@@ -46,7 +46,7 @@ class Venue(models.Model):
     venuelongitude = models.FloatField(db_column='venueLongitude', blank=True, null=True)  # Field name made lowercase.
     venueurl = models.CharField(db_column='venueUrl', max_length=255, blank=True, null=True)  # Field name made lowercase.
     venuestatecode = models.CharField(db_column='venueStateCode', max_length=50, blank=True, null=True)  # Field name made lowercase.
-    updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
+    updatedat = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
 
     class Meta:
         db_table = 'venues'
