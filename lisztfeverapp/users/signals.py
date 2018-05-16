@@ -1,6 +1,5 @@
 from allauth.account.signals import user_signed_up
 from django.dispatch import receiver
-from io import BytesIO
 from urllib.request import urlopen
 from django.core.files import File
 
