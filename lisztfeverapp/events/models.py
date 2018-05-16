@@ -35,7 +35,7 @@ class UnixTimestampField(models.DateTimeField):
         return strftime('%Y-%m-%d %H:%M:%S',value.timetuple())
 
 class Venue(models.Model):
-    venueid = models.CharField(db_column='venueId', primary_key=True, max_length=255)  # Field name made lowercase.
+    venueid = models.CharField(db_column='venueId', max_length=255)  # Field name made lowercase.
     venuecity = models.CharField(db_column='venueCity', max_length=50, blank=True, null=True)  # Field name made lowercase.
     venuecountrycode = models.CharField(db_column='venueCountryCode', max_length=50, blank=True, null=True)  # Field name made lowercase.
     venuename = models.CharField(db_column='venueName', max_length=255, blank=True, null=True)  # Field name made lowercase.
@@ -47,6 +47,10 @@ class Venue(models.Model):
     venueurl = models.CharField(db_column='venueUrl', max_length=255, blank=True, null=True)  # Field name made lowercase.
     venuestatecode = models.CharField(db_column='venueStateCode', max_length=50, blank=True, null=True)  # Field name made lowercase.
     updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        db_table = 'venues'
+        unique_together = (('venueid', 'venuename'),)
 
 
 class Event(models.Model):
@@ -64,12 +68,10 @@ class Event(models.Model):
     minprice = models.FloatField(db_column='minPrice', blank=True, null=True)  # Field name made lowercase.
     eventstartlocaltime = models.TimeField(db_column='eventStartLocalTime', blank=True, null=True)  # Field name made lowercase.
     updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
-    venue = models.ForeignKey(Venue, db_column='venueId', on_delete=models.CASCADE, null=True)
-    venuename = models.CharField(db_column='venueName', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    venue = models.ForeignKey(Venue, on_delete=models.CASCADE, null=True)
 
     class Meta:
         ordering = ['eventstartlocaldate']
-        unique_together =(('eventid', 'venue', 'venuename'),)
 
 
 class EventArtists(models.Model):
