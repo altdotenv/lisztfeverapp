@@ -8,13 +8,14 @@ from django.core.paginator import Paginator
 from .models import User #cookiecutter default
 from . import models, serializers
 from lisztfeverapp.artists import models as artist_models
-from lisztfeverapp.events import serializers as event_serializers
+from lisztfeverapp.events import serializers as event_serializers, models as event_models
 from lisztfeverapp.artists import serializers as artist_serializers
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
 from facepy import SignedRequest
 import json
 from datetime import date, timedelta
+from collections import OrderedDict
 
 class UserMain(APIView):
 
@@ -54,10 +55,27 @@ class UserPlan(APIView):
     def get(self, request, format=None):
 
         user = request.user
-        user_plan = user.user_events.all().filter(eventstartlocaldate__gte=date.today())        
-        serializer = event_serializers.EventSerializer(user_plan, many=True, context={'request': request})
+        user_plan = user.user_events.all().filter(eventstartlocaldate__gte=date.today()).order_by('eventstartlocaldate')
+        event_serializer = event_serializers.EventSerializer(user_plan, many=True, context={'request': request})
 
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        result = []
+        for i in event_serializer.data:
+            venue_added_event = {}
+            try:
+                found_venue = event_models.EventVenues.objects.filter(eventid=i['eventid'])
+            except event_models.EventVenues.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+            venue_serializer = event_serializers.EventVenuesSerializer(found_venue, many=True)
+
+            venue = []
+            for j in venue_serializer.data:
+                venue.append(dict(OrderedDict(j)))
+
+            venue_added_event.update({'event':i, 'venue': venue})
+            result.append(venue_added_event)
+
+        return Response(data=result, status=status.HTTP_200_OK)
 
 class UserSetting(APIView):
 

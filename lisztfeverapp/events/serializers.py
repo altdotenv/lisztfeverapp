@@ -3,21 +3,32 @@ from . import models
 from lisztfeverapp.users import models as user_models
 from lisztfeverapp.artists import serializers as artist_serializers
 
-class VenueSerializer(serializers.ModelSerializer):
+class EventVenuesSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = models.Venue
-        fields = "__all__"
+        model = models.EventVenues
+        fields = (
+            "venueid",
+            "venuename",
+            "venuecity",
+            "venuestatecode",
+            "venuecountrycode",
+            "venuestreet",
+            "venuezipcode",
+            "venuelatitude",
+            "venuelongitude",
+            "venueurl",
+            "venuetimezone",
+        )
 
 
 class EventSerializer(serializers.ModelSerializer):
 
-    venue = VenueSerializer()
-    artists = artist_serializers.ArtistSerializer(source="artists_set", many=True)
+    # artists = artist_serializers.ArtistSerializer(source="artists_set", many=True)
     is_planned = serializers.SerializerMethodField()
 
     class Meta:
-        model = models.Event
+        model = models.Events
         fields = (
             "eventid",
             "eventname",
@@ -27,8 +38,7 @@ class EventSerializer(serializers.ModelSerializer):
             "eventstatus",
             "maxprice",
             "minprice",
-            "venue",
-            "artists",
+            # "artists",
             "is_planned",
         )
 

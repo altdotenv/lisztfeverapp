@@ -25,7 +25,7 @@ const LoadingPlan = props => (
 const RenderPlan = props => (
   <div className={styles.plan}>
     {props.planList.map(plan => (
-      <PlanDisplay plan={plan} key={plan.eventid} />
+      <PlanDisplay plan={plan} key={plan.event.eventid} />
     ))}
   </div>
 )

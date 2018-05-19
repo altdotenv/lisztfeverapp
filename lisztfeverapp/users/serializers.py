@@ -17,19 +17,6 @@ class PlanSerializer(serializers.ModelSerializer):
             "event",
         )
 
-# class FollowArtistSerializer(serializers.ModelSerializer):
-#
-#     artist = artist_serializers.ArtistSerializer()
-#
-#     class Meta:
-#         model = models.FollowArtist
-#         fields = (
-#             "source",
-#             "classification",
-#             "artist",
-#             "created_at"
-#         )
-
 class UserSerializer(serializers.ModelSerializer):
 
     user_plans = PlanSerializer(many=True)
@@ -44,8 +31,6 @@ class UserSerializer(serializers.ModelSerializer):
             'profile_image',
             "event_count",
             'user_plans',
-            # "following_count",
-            # 'user_follow_artists',
         )
 
 class SignUpSerializer(RegisterSerializer):

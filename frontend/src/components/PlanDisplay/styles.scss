@@ -12,26 +12,31 @@
     .big-avatar {
       min-width: 55px;
       width: 55px;
+      height: 55px;
       border-radius: 50%;
     }
-    .event {
-      margin: 0 12px;
-      .event-status {
-        color: red;
-        line-height: 20px;
-        font-weight: 600;
-        text-transform: capitalize;
-      }
-      .event-name {
-        color: black;
-        font-weight: 600;
-        display: block;
-        margin-bottom: 5px;
-      }
-      .sub-info {
-        font-size: 12px;
-        line-height: 16px;
-        color: $dark-grey;
+    &:nth-child(2){
+      width: 100%;
+      align-items: left;
+      .event {
+        margin: 0 12px;
+        .event-status {
+          color: red;
+          line-height: 20px;
+          font-weight: 600;
+          text-transform: capitalize;
+        }
+        .event-name {
+          color: black;
+          font-weight: 600;
+          display: block;
+          margin-bottom: 5px;
+        }
+        .sub-info {
+          font-size: 12px;
+          line-height: 16px;
+          color: $dark-grey;
+        }
       }
     }
     .button {

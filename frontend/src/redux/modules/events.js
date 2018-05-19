@@ -296,8 +296,8 @@ function applyPlanList(state, action){
   const { eventId } = action;
   const { planList } = state;
   const updatedPlanList = planList.map(plan => {
-    if(plan.eventid === eventId) {
-      return {...plan, is_planned: true}
+    if(plan.event.eventid === eventId) {
+      return {...plan, event: {...plan['event'], is_planned: true }}
     }
     return plan
   });
@@ -308,8 +308,8 @@ function applyUnplanList(state, action){
   const { eventId } = action;
   const { planList } = state;
   const updatedPlanList = planList.map(plan => {
-    if(plan.eventid === eventId) {
-      return {...plan, is_planned: false}
+    if(plan.event.eventid === eventId) {
+      return {...plan, event: {...plan['event'], is_planned: false }}
     }
     return plan
   });

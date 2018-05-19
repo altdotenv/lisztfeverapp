@@ -56,7 +56,7 @@ class User(AbstractUser):
     updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
     last_session_at = UnixTimestampField(db_column='lastSessionAt', null=True)
     sessions = models.IntegerField(null=True, default=0)
-    user_events = models.ManyToManyField(event_models.Event, through='Plan', related_name="user_events")
+    user_events = models.ManyToManyField(event_models.Events, through='Plan', related_name="user_events")
 
     def __str__(self):
         return self.username
@@ -69,9 +69,8 @@ class User(AbstractUser):
 class Plan(models.Model):
 
     user = models.ForeignKey(User, db_column='userId', on_delete=models.CASCADE, related_name='user_plans') #Without related_name default is plan_set
-    event = models.ForeignKey(event_models.Event, db_column='eventId', on_delete=models.CASCADE)
+    event = models.ForeignKey(event_models.Events, db_column='eventId', on_delete=models.CASCADE)
     updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
 
     class Meta:
-        order_with_respect_to = 'event'
         unique_together = (('user', 'event'),)
