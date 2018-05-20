@@ -26,7 +26,7 @@ class ArtistSerializer(serializers.ModelSerializer):
 
 class ArtistAllSerializer(serializers.ModelSerializer):
 
-    genres = ArtistGenresSerializer(many=True)
+    # genres = ArtistGenresSerializer(many=True)
 
     class Meta:
         model = models.Artists
@@ -39,5 +39,5 @@ class ArtistAllSerializer(serializers.ModelSerializer):
             "externalurl",
             "imageurl",
             "updatedat",
-            "genres",
+            # "genres",
         )

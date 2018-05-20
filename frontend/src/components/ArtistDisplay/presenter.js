@@ -13,12 +13,6 @@ const ArtistDisplay = (props, context) => {
       </header>
       <div className={styles.artistBody}>
         <span className={styles.artistName}>{props.artist.artistname}</span>
-        <div className={styles.artistGenre}>
-          {props.artist.genres.map(genre => (
-              <Genre genre={genre} key={genre.id} />
-            ))
-          }
-        </div>
         <span className={styles.text}>{props.artist.popularity}</span>
       </div>
       <div>
@@ -28,9 +22,9 @@ const ArtistDisplay = (props, context) => {
   )
 };
 
-const Genre = props => (
-    <span>#{props.genre.genre}</span>
-)
+// const Genre = props => (
+//     <span>#{props.genre.genre}</span>
+// )
 
 const ArtistActions = props => (
   <div className={styles.actions}>
@@ -54,12 +48,6 @@ ArtistDisplay.propTypes = {
     artistname: PropTypes.string.isRequired,
     popularity: PropTypes.number.isRequired,
     imageurl: PropTypes.string,
-    genres: PropTypes.arrayOf(
-      PropTypes.shape({
-        id:PropTypes.number,
-        genre: PropTypes.string,
-      })
-    )
   })
 };
 
