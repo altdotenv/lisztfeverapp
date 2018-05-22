@@ -62,6 +62,8 @@ class User(AbstractBaseUser):
         error_messages={
             'unique': _("A user with that username already exists."),
         })
+    first_name = models.CharField(max_length=255, db_column='firstName', null=True)
+    last_name = models.CharField(max_length=255, db_column='lastName', null=True)
     page_id = models.CharField(max_length=255, db_column='pageId', null=True)
     profile_pic = models.URLField(db_column='profilePic', max_length=1025, null=True)
     timezone = models.IntegerField(null=True)
@@ -74,14 +76,10 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'username'
     objects = UserManager()
-    
+
     def __str__(self):
         return self.username
-
-    @property
-    def event_count(self):
-        return self.user_events.all().count()
-
+        
 
 class Plan(models.Model):
 
