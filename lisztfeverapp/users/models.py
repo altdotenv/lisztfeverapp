@@ -1,6 +1,8 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import UserManager
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.core import validators
 from lisztfeverapp.artists import models as artist_models
 from lisztfeverapp.events import models as event_models
 from datetime import datetime
@@ -39,7 +41,7 @@ class UnixTimestampField(models.DateTimeField):
         return strftime('%Y-%m-%d %H:%M:%S',value.timetuple())
 
 
-class User(AbstractUser):
+class User(AbstractBaseUser):
 
     """ User Model """
 
@@ -48,7 +50,19 @@ class User(AbstractUser):
         ('female', 'Female'),
         ('not-specified', 'Not specified')
     )
-    name = models.CharField(max_length=255, null=True)
+    username = models.CharField(_('username'), max_length=255, unique=True,
+        help_text=_('Required. 30 characters or fewer. Letters, digits and '
+                    '@/./+/-/_ only.'),
+        validators=[
+            validators.RegexValidator(r'^[\w.@+-]+$',
+                                      _('Enter a valid username. '
+                                        'This value may contain only letters, numbers '
+                                        'and @/./+/-/_ characters.'), 'invalid'),
+        ],
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        })
+    page_id = models.CharField(max_length=255, db_column='pageId', null=True)
     profile_pic = models.URLField(db_column='profilePic', max_length=1025, null=True)
     timezone = models.IntegerField(null=True)
     locale = models.CharField(max_length=50, null=True)
@@ -58,6 +72,9 @@ class User(AbstractUser):
     sessions = models.IntegerField(null=True, default=0)
     user_events = models.ManyToManyField(event_models.Events, through='Plan', related_name="user_events")
 
+    USERNAME_FIELD = 'username'
+    objects = UserManager()
+    
     def __str__(self):
         return self.username
 

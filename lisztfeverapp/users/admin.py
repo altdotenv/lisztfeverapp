@@ -30,16 +30,16 @@ class MyUserCreationForm(UserCreationForm):
         raise forms.ValidationError(self.error_messages["duplicate_username"])
 
 
-@admin.register(User)
-class MyUserAdmin(AuthUserAdmin):
-    form = MyUserChangeForm
-    add_form = MyUserCreationForm
-    fieldsets = (
-        ("User Profile", {
-         "fields": ("name", "profile_pic", "gender")}),
-    ) + AuthUserAdmin.fieldsets
-    list_display = ("username", "name", "is_superuser")
-    search_fields = ["name"]
+# @admin.register(User)
+# class MyUserAdmin(AuthUserAdmin):
+#     form = MyUserChangeForm
+#     add_form = MyUserCreationForm
+#     fieldsets = (
+#         ("User Profile", {
+#          "fields": ("name", "profile_pic", "gender")}),
+#     ) + AuthUserAdmin.fieldsets
+#     list_display = ("username", "name", "is_superuser")
+#     search_fields = ["name"]
 
 @admin.register(models.Plan)
 class PlanAdmin(admin.ModelAdmin):
