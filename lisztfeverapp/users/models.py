@@ -70,7 +70,6 @@ class User(AbstractBaseUser):
     locale = models.CharField(max_length=50, null=True)
     gender = models.CharField(max_length=50, choices=GENDER_CHOICES, null=True)
     updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
-    created_at = UnixTimestampField(auto_created=True, db_column='createdAt', null=True)
     last_session_at = UnixTimestampField(db_column='lastSessionAt', null=True)
     sessions = models.IntegerField(null=True, default=0)
     user_events = models.ManyToManyField(event_models.Events, through='Plan', related_name="user_events")
