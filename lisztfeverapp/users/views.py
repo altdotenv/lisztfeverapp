@@ -72,6 +72,11 @@ class UserPlan(APIView):
             for j in venue_serializer.data:
                 venue.append(dict(OrderedDict(j)))
 
+            http_to_https = i.get('primaryeventurl')
+            if http_to_https and http_to_https[:5] == 'http:':
+                http_to_https = 'https:' + http_to_https[5:]
+                i['primaryeventurl'] = http_to_https
+
             venue_added_event.update({'event':i, 'venue': venue})
             result.append(venue_added_event)
 
