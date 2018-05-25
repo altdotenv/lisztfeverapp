@@ -72,7 +72,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool('DJANGO_SECURE_CONTENT_TYPE_NOSNIFF', def
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-browser-xss-filter
 SECURE_BROWSER_XSS_FILTER = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
-X_FRAME_OPTIONS = 'ALLOW-FROM https://www.messenger.com/'
+X_FRAME_OPTIONS = 'ALLOW'
 
 # STORAGES
 # ------------------------------------------------------------------------------
