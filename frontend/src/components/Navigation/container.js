@@ -30,7 +30,7 @@ class Container extends Component {
     event.preventDefault()
     goToSearch(term);
     this.setState({
-      term: term
+      term: ""
     });
   }
 }

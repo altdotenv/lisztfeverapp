@@ -21,12 +21,9 @@ const PlanDisplay = (props, context) => (
           }
           <div className={styles.eventName}>{props.plan.event.eventname}</div>
           <div className={styles.subInfo}>
-            {props.plan.venue.length > 0 ? (
-              <div>
-                <span className={styles.venue}>{props.plan.venue[0].venuename}, </span>
-                <span className={styles.venue}>{props.plan.venue[0].venuecity}</span>
-              </div>
-            ) : (
+            {props.plan.venue.length > 0 ?
+              props.plan.venue.map((venue, index) => <Venue venue={venue} key={index} />)
+              : (
               <div className={styles.venue}>{context.t("Venue : Not Specified")}</div>
             )}
             <div className={styles.eventDate}>{props.plan.event.eventstartlocaldate}</div>
@@ -39,6 +36,13 @@ const PlanDisplay = (props, context) => (
         {props.plan.event.is_planned ? context.t("Delete") : context.t("Add")}
       </button>
     </div>
+  </div>
+)
+
+const Venue = props => (
+  <div className={styles.venue}>
+    <span className={styles.venue}>{props.venue.venuename} - </span>
+    <span className={styles.venue}>{props.venue.venuecity}</span>
   </div>
 )
 

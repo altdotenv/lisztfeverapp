@@ -39,6 +39,25 @@ function facebookLogin(access_token){
   };
 }
 
+function redirectListenMusic(artist_id) {
+  return (dispatch, getState) => {
+    const { user: { token } } = getState();
+    fetch(`/user/listen/${artist_id}/`, {
+      headers: {
+        Authorization: `JWT ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
+    .then(response => {
+      if (response.status === 401) {
+        dispatch(logout());
+      } else {
+        dispatch(push('/close/browser'))
+      }
+    })
+  };
+}
+
 function redirectSignedRequest(signed_request, path){
   return async (dispatch, getState) => {
     const tokenBySignedRequest = await facebookSignedRequest(signed_request);
@@ -160,7 +179,8 @@ const actionCreators = {
   usernameLogin,
   createAccount,
   logout,
-  redirectSignedRequest
+  redirectSignedRequest,
+  redirectListenMusic
 };
 
 export { actionCreators }

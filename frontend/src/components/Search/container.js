@@ -16,11 +16,14 @@ class Container extends Component {
   }
   componentDidUpdate = (prevProps, prevState) => {
     const { searchByTerm } = this.props;
-    if(prevProps.match.params !== this.props.match.params) {
+    if(this.props.match.params.searchTerm !== prevProps.match.params.searchTerm){
+      this.setState({
+        loading: true
+      })
       searchByTerm();
     }
   }
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps, nextState) {
     if(nextProps.artistList){
       this.setState({
         loading: false

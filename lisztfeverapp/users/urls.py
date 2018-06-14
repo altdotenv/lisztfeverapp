@@ -8,5 +8,6 @@ urlpatterns = [
     path("plans/", view = views.UserPlan.as_view(), name = 'user_plans'),
     path("settings/", view = views.UserSetting.as_view(), name = 'user_events'),
     path('login/facebook/', view=views.FacebookLogin.as_view(), name='fb_login'),
-    path("signed_request/", view=views.FacebookSignedRequest.as_view(), name='signed_request')
+    path("signed_request/", view=views.FacebookSignedRequest.as_view(), name='signed_request'),
+    path("listen/<str:artist_id>/", view=views.FacebookListenMusic.as_view(), name='listen_music')
 ]

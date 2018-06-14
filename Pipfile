@@ -36,6 +36,7 @@ django-rest-auth = "*"
 django-cors-headers = "*"
 awsebcli = "*"
 facepy = "*"
+"boto3" = "*"
 
 [dev-packages]
 

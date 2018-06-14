@@ -52,3 +52,4 @@ class EventSerializer(serializers.ModelSerializer):
             except user_models.Plan.DoesNotExist:
                 return False
         return False
+        

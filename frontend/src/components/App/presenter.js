@@ -10,6 +10,8 @@ import Plan from "components/Plan";
 import Search from "components/Search";
 import Event from "components/Event";
 import SignedRequest from "components/SignedRequest";
+import ListenMusic from "components/ListenMusic";
+import CloseWebview from "components/CloseWebview";
 
 const App = props => [
   props.isLoggedIn ? <Navigation key={1}/> : null,
@@ -25,9 +27,13 @@ const PrivateRoutes = props => (
   <Switch>
     <Route exact path="/" component={Feed} />
     <Route exact path="/plan" component={Plan} />
+    <Route exact path="/feed" component={Feed} />
     <Route exact path="/event/artist/:artistId" component={Event} />
     <Route exact path="/search/:searchTerm" component={Search} />
     <Route exact path="/signed_request/plan" component={Plan} />
+    <Route exact path="/signed_request/feed" component={Feed} />
+    <Route exact path="/listen/:artistId" component={ListenMusic} />
+    <Route exact path="/close/browser" component={CloseWebview} />
   </Switch>
 );
 

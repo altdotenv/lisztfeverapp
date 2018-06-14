@@ -9,13 +9,13 @@ const FeedEvent = (props, context) => {
   return (
     <div className={styles.feedEvent}>
       <header>
-        <img src={props.eventimageurl || require("images/noImage.jpg")} alt={props.eventname} />
+        <img src={props.event_image_url || require("images/noImage.jpg")} alt={props.event_name} />
       </header>
       <div>
         <EventBody
-          eventname={props.eventname}
-          eventstatus={props.eventstatus}
-          eventstartlocaldate={props.eventstartlocaldate}
+          eventname={props.event_name}
+          eventstatus={props.event_status}
+          eventstartlocaldate={props.event_start_local_date}
           artists={props.artists}
           venue={props.venue}
         />
@@ -28,27 +28,18 @@ const FeedEvent = (props, context) => {
 };
 
 FeedEvent.propTypes = {
-  eventid: PropTypes.string.isRequired,
-  eventname: PropTypes.string.isRequired,
-  eventstartlocaldate: PropTypes.string,
-  eventimageurl: PropTypes.string.isRequired,
-  primaryeventurl: PropTypes.string.isRequired,
-  eventstatus: PropTypes.string,
-  maxprice: PropTypes.number,
-  minprice: PropTypes.number,
-  artists: PropTypes.arrayOf(
+  event_id: PropTypes.string.isRequired,
+  event_name: PropTypes.string.isRequired,
+  event_start_local_date: PropTypes.string,
+  event_image_url: PropTypes.string.isRequired,
+  primary_event_url: PropTypes.string.isRequired,
+  event_status: PropTypes.string,
+  venues: PropTypes.arrayOf(
     PropTypes.shape({
-      artistid: PropTypes.string.isRequired,
-      artistname: PropTypes.string.isRequired,
-      imageurl: PropTypes.string
+      venuename: PropTypes.string.isRequired,
+      venuecity: PropTypes.string.isRequired,
     })
   ),
-  venue: PropTypes.shape({
-    venueid: PropTypes.string.isRequired,
-    venuename: PropTypes.string.isRequired,
-    venuecity: PropTypes.string.isRequired,
-    venuestreet: PropTypes.string
-  }),
   is_planned: PropTypes.bool.isRequired
 }
 

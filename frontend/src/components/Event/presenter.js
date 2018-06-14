@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styles from "./styles.scss";
 import Loading from "components/Loading";
-import FeedEvent from "components/FeedEvent";
+import EventBody from "components/EventBody";
 
 const Event = (props, context) => {
   if (props.loading) {
@@ -10,19 +10,19 @@ const Event = (props, context) => {
   } else if (props.eventList.length < 1) {
     return <NotFound text={context.t("No Events :(")} />;
   } else if(props.eventList.length >0 ) {
-    return <RenderFeed {...props} />;
+    return <RenderEvent {...props} />;
   }
 };
 
 const LoadingFeed = props => (
-  <div className={styles.event}>
+  <div className={styles.loading}>
     <Loading />
   </div>
 )
 
-const RenderFeed = props => (
+const RenderEvent = props => (
   <div className={styles.event}>
-    {props.eventList.map(event => <FeedEvent {...event} key={event.eventid} />)}
+    {props.eventList.map(event => <EventBody {...event} key={event.event_id} />)}
   </div>
 )
 

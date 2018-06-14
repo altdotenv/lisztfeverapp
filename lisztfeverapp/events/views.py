@@ -5,6 +5,9 @@ from . import models, serializers
 from lisztfeverapp.users import models as user_models
 from lisztfeverapp.artists import models as artist_models
 from collections import OrderedDict
+from django.db import connection
+cursor = connection.cursor()
+
 # Create your views here.
 
 class Event(APIView):
@@ -39,41 +42,73 @@ class EventByArtistId(APIView):
 
         if artist_id is not None:
 
-            try:
-                found_event = models.Events.objects.raw("""
-                    SELECT *
-                    FROM events t1
-                    INNER JOIN event_artists t2
-                    ON t1.eventId=t2.eventId
-                    WHERE t2.artistId=%s
-                """, [artist_id])
-            except models.Events.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+            cursor.execute("""
+                SELECT
+                    t2.eventId AS 'event_id',
+                    t2.eventName AS 'event_name',
+                    t2.eventImageUrl AS 'event_image_url',
+                    t2.eventStartLocalDate AS 'event_start_local_date',
+                    t2.eventStartLocalTime AS 'event_start_local_time',
+                    t2.eventStatus AS 'event_status',
+                    t2.primaryEventUrl AS 'primary_event_url',
+                    GROUP_CONCAT(t3.venueName SEPARATOR '||') AS 'venue_name',
+                    GROUP_CONCAT(t3.venueCity SEPARATOR '||') AS 'venue_city'
+                FROM event_artists t1
+                JOIN events t2 ON (t2.eventId=t1.eventId AND t1.artistId= %s AND eventStartLocalDate >= NOW() AND t2.eventStatus IN ('onsale', 'offsale'))
+                JOIN event_venues t3 ON (t3.eventId=t2.eventId)
+                JOIN event_classifications t4 ON t4.eventId=t2.eventId AND t4.classificationSegment='Music'
+                GROUP BY 1
+                ORDER BY 4 ASC
+            """, [artist_id])
 
-            event_serializer = serializers.EventSerializer(found_event, many=True, context={'request': request})
+            data = self.dictfetchall(cursor)
 
-            result = []
-            for i in event_serializer.data:
-                venue_added_event = {}
-                try:
-                    found_venue = models.EventVenues.objects.filter(eventid=i['eventid'])
-                except models.EventVenues.DoesNotExist:
-                    return Response(status=status.HTTP_404_NOT_FOUND)
+            for i in data:
 
-                venue_serializer = serializers.EventVenuesSerializer(found_venue, many=True)
+                venue_list = []
+                venue_name_list = i['venue_name'].split('||')
+                venue_city_list = i['venue_city'].split('||')
+                i.pop('venue_name')
+                i.pop('venue_city')
+                for name, city in zip(venue_name_list, venue_city_list):
+                    venue = {}
+                    venue.update({'venue_name':name, 'venue_city':city})
+                    venue_list.append(venue)
 
-                venue = []
-                for j in venue_serializer.data:
-                    venue.append(dict(OrderedDict(j)))
+                i.update({'venues':venue_list})
 
-                venue_added_event.update({'event':i, 'venue': venue})
-                result.append(venue_added_event)
+                is_planned = self.get_is_planned(request, i['event_id'])
+                i.update({'is_planned':is_planned})
 
-            return Response(data=result, status=status.HTTP_200_OK)
+                http_to_https = i.get('primary_event_url')
+                if http_to_https and http_to_https[:5] == 'http:':
+                    http_to_https = 'https:' + http_to_https[5:]
+                    i['primary_event_url'] = http_to_https
+
+                i['event_start_local_time'] = str(i['event_start_local_time'])[:5]
+
+            return Response(data=data, status=status.HTTP_200_OK)
 
         else:
 
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def get_is_planned(self, request, event_id):
+
+        try:
+            user_models.Plan.objects.get(
+                user__id=request.user.id, event__eventid=event_id)
+            return True
+        except user_models.Plan.DoesNotExist:
+            return False
+
+    def dictfetchall(self, cursor):
+        "Return all rows from a cursor as a dict"
+        columns = [col[0] for col in cursor.description]
+        return [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
 
 class PlanEvent(APIView):
 

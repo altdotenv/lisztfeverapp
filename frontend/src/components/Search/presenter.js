@@ -5,30 +5,26 @@ import Loading from "components/Loading";
 import ArtistDisplay from "components/ArtistDisplay";
 
 const Search = (props, context) => {
-  return (
-    <div className={styles.search}>
-      <div className={styles.section}>
-        {props.loading && <Loading />}
-        {!props.loading &&
-          props.artistList.length < 1 && (
-            <NotFound text={context.t("Nothing found :(")} />
-          )
-        }
-        <div className={styles.content}>
-          {!props.loading &&
-            props.artistList.length > 0 && (
-              <RenderArtistSearch artistList={props.artistList} />
-            )
-          }
-        </div>
-      </div>
-    </div>
-  )
+  if (props.loading) {
+    return <LoadingSearch />;
+  } else if (!props.loading && props.artistList.length > 0) {
+    return <RenderArtistSearch {...props} />;
+  } else if (!props.loading && props.artistList.length < 1) {
+    return <NotFound text={context.t("Nothing found :(")} />;
+  }
 };
 
-const RenderArtistSearch = props => props.artistList.map(artist => (
-  <ArtistDisplay artist={artist} key={artist.artistid} />
-))
+const LoadingSearch = props => (
+  <div className={styles.loading}>
+    <Loading />
+  </div>
+)
+
+const RenderArtistSearch = props => (
+  <div className={styles.search}>
+    {props.artistList.map(artist => <ArtistDisplay artist={artist} key={artist.artist_id} />)}
+  </div>
+)
 
 const NotFound = props => <span className={styles.notFound}>{props.text}</span>
 

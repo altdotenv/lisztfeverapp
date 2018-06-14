@@ -5,6 +5,8 @@ from .base import env
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env.bool('DJANGO_DEBUG', default=True)
+AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env('DJANGO_SECRET_KEY', default='YgeFf8iR3s46FGckkc4Du00Am9p6TFEGBGmyvyY2S7Vi9R1ugtKTc3akjcI6E7eA')
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts

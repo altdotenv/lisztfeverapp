@@ -10,58 +10,61 @@
   }
   .inner {
     max-width: $max-page-width + 80px;
-    display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 77px;
     padding: 25px 40px;
     @include breakpoint("phone") {
-      padding: 5px 5px;
+      padding: 16px 16px;
     };
-    .column {
+    .logo-icon{
+      width: 100%;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 33%;
-      &:nth-child(2) {
-        @include breakpoint("phone") {
-          display: none;
+      .column {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50%;
+        &:first-child {
+          justify-content: flex-start;
+        }
+        .logo {
+          max-width: 150px;
+        }
+        .nav-icon {
+          width: 30px;
+          height: 30px;
+          cursor: pointer;
+          margin-left: auto;
         }
       }
-      &:first-child {
-        justify-content: flex-start;
-      }
-      &:last-child {
-        @include breakpoint("phone") {
-          display: none;
-        };
-      }
-      .logo {
-        max-width: 150px;
-      }
-      .searchInput {
-        max-width: 215px;
-        width: 100%;
-        box-sizing: border-box;
-        padding: 5px;
-        border: solid 1px $main-pink;
-        border-radius: 3px;
-        background-color: #fafafa;
-        font-size: $normal-font-size;
-        font-weight: 300;
-        margin-right: 15px;
-        &::placeholder {
-          color: $main-pink;
-        }
-        &:focus {
+    }
+    .search-box {
+      width: 100%;
+      padding-top: 15px;
+      form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .search-input {
+          width: 100%;
+          border: none;
           outline: none;
-          background-color: white;
+          box-sizing: border-box;
+          border-bottom: solid 1px $middle-grey;
+          font-size: $normal-font-size;
+          font-weight: 300;
+          &::placeholder {
+            color: $middle-grey;
+          }
+          &:focus {
+            color: $main-pink;
+            border-bottom: solid 1px $main-pink;
+          }
+          &:focus::-webkit-input-placeholder {
+            color: transparent;
+          }
         }
-      }
-      .nav-icon {
-        margin-left: 30px;
-        cursor: pointer;
       }
     }
   }

@@ -5,11 +5,11 @@ import { push } from "react-router-redux";
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     goToSearch: searchTerm => {
-      if (searchTerm[0] === '#'){
-        searchTerm = searchTerm.substr(1, ).replace("#", ",")
+      if(searchTerm[0] === '#' || searchTerm[0] === '%' || searchTerm[0] === '?' || searchTerm[0] === '/'){
+        alert("Don't use #, %, ? and /.")
+      }
+      else {
         dispatch(push(`/search/${searchTerm}`));
-      } else {
-        alert("Please hashtags!")
       }
     }
   };

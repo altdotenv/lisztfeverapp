@@ -14,10 +14,17 @@ const UNPLAN_LIST = "UNPLAN_LIST";
 function setFeed(json){
   return {
     type: SET_FEED,
-    total_pages: json.total_pages,
-    feed: json.data
+    feed: json
   }
 }
+
+// function setFeed(json){
+//   return {
+//     type: SET_FEED,
+//     total_pages: json.total_pages,
+//     feed: json.data
+//   }
+// }
 
 function setEventList(eventList) {
   return {
@@ -62,10 +69,34 @@ function doUnplanList(eventId){
 
 // api actions
 
-function getFeed(page) {
+// function getFeed(page) {
+//   return (dispatch, getState) => {
+//     const { user: { token } } = getState();
+//     fetch(`/user/?page=${page}`, {
+//       headers: {
+//         Authorization: `JWT ${token}`,
+//         "Content-Type": "application/json"
+//       }
+//     })
+//       .then(response => {
+//         if (response.status === 401) {
+//           dispatch(userActions.logout());
+//         }
+//         return response.json();
+//       })
+//       .then(response => {
+//         return response
+//       })
+//       .then(json => {
+//         dispatch(setFeed(json));
+//       });
+//   };
+// }
+
+function getFeed() {
   return (dispatch, getState) => {
     const { user: { token } } = getState();
-    fetch(`/user/?page=${page}`, {
+    fetch('/user/', {
       headers: {
         Authorization: `JWT ${token}`,
         "Content-Type": "application/json"
@@ -218,8 +249,12 @@ function unplanList(eventId){
 
 // initial state
 const initialState = {
-  feed:[]
+  feed: []
 };
+
+// const initialState = {
+//   feed:[]
+// };
 
 // reducer
 function reducer(state = initialState, action){
@@ -244,13 +279,21 @@ function reducer(state = initialState, action){
 }
 // reducer functions
 function applySetFeed(state, action){
-  const { total_pages, feed } = action;
-  const updatedFeed = state.feed.concat(feed)
-  if (updatedFeed === state.feed){
-    return {...state, feed: state.feed, total_pages: total_pages}
+  const { feed } = action;
+  return {
+    ...state,
+    feed
   }
-  return {...state, feed: updatedFeed, total_pages: total_pages}
 };
+
+// function applySetFeed(state, action){
+//   const { total_pages, feed } = action;
+//   const updatedFeed = state.feed.concat(feed)
+//   if (updatedFeed === state.feed){
+//     return {...state, feed: state.feed, total_pages: total_pages}
+//   }
+//   return {...state, feed: updatedFeed, total_pages: total_pages}
+// };
 
 function applySetEventList(state, action){
   const { eventList } = action;
@@ -264,11 +307,13 @@ function applyPlanEvent(state, action){
   const { eventId } = action;
   const { eventList } = state;
   const updatedEventList = eventList.map(event => {
-    if(event.eventid === eventId) {
+    console.log(event)
+    if(event.event_id === eventId) {
       return {...event, is_planned: true}
     }
     return event
   });
+  console.log(updatedEventList)
   return {...state, eventList: updatedEventList};
 }
 
@@ -276,7 +321,7 @@ function applyUnplanEvent(state, action){
   const { eventId } = action;
   const { eventList } = state;
   const updatedEventList = eventList.map(event => {
-    if(event.eventid === eventId) {
+    if(event.event_id === eventId) {
       return {...event, is_planned: false}
     }
     return event

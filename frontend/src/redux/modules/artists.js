@@ -28,7 +28,7 @@ function searchByTerm(searchTerm) {
 }
 
 function searchArtists(token, searchTerm) {
-  return fetch(`/artist/search/?genres=${searchTerm}`, {
+  return fetch(`/artist/search/?terms=${searchTerm}`, {
     headers: {
       Authorization: `JWT ${token}`,
       "Content-Type": "application/json"

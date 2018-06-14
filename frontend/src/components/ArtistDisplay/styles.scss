@@ -1,14 +1,57 @@
-.feed-event {
-  @include boxBorder(yes);
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px;
   width: 100%;
-  max-width: $max-card-width;
-  margin-bottom: 60px;
-  @include breakpoint("phone") {
-    background-color: transparent;
-    border: 0;
-    margin-bottom: 30px;
-  }
-  &:last-child {
-    margin-bottom: 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid $light-grey;
+  .column {
+    display: flex;
+    align-items: center;
+    .big-avatar {
+      min-width: 55px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+    }
+    &:nth-child(2){
+      width: 100%;
+      .artist {
+        padding: 0 10px;
+        .artist-name {
+          color: red;
+          cursor: pointer;
+          line-height: 20px;
+          font-weight: 600;
+          text-transform: capitalize;
+        }
+        .genres {
+          color: black;
+          font-weight: 600;
+          display: block;
+          margin-bottom: 5px;
+          .genre {
+            color: black;
+          }
+        }
+        .event-count {
+          font-size: 12px;
+          line-height: 16px;
+          color: $dark-grey;
+        }
+      }
+    }
+    &:last-child {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: left;
+      height: 60px;
+      padding: 0 5px;
+      &:first-child {
+        border-bottom: 1px solid $light-grey;
+      }
+    }
   }
 }
