@@ -58,41 +58,45 @@ class UserMain(APIView):
 
     def get(self, request, format=None):
 
-        user = request.user.id
+        try:
+            user = request.user
 
-        cursor.execute("""
-            SELECT
-              t1.artistId AS 'artist_id',
-              t1.artistName AS 'artist_name',
-              t1.imageUrl AS 'image_url',
-              t1.popularity,
-              t1.total_count,
-              t1.local_count,
-              GROUP_CONCAT(t2.genre) AS 'genres'
-            FROM (
+            cursor.execute("""
                 SELECT
-                    t1.artistId,
-                    t1.artistName,
-                    t1.imageUrl,
-                    t1.popularity,
-                    COUNT(t3.eventId) AS total_count,
-                    COUNT(t6.eventid) AS local_count
-                FROM artists t1
-                JOIN event_artists t2 ON t2.artistId = t1.artistId
-                JOIN events t3 ON t3.eventId = t2.eventId AND t3.eventStartLocalDate >= NOW() AND t3.eventStatus IN ('onsale', 'offsale')
-                JOIN event_classifications t4 ON (t4.eventId = t3.eventId AND t4.classificationSegment = 'Music')
-                JOIN user_locations t5 ON (t5.userId = %s)
-                LEFT JOIN event_venues t6 ON (t6.eventId = t3.eventId AND lat_lng_distance(t6.venueLatitude, t6.venueLongitude, t5.latitude, t5.longitude) <= 50)
-                GROUP BY 1,2,3,4
-                HAVING COUNT(t3.eventId) >= 1 AND COUNT(t6.eventId) >= 1
+                  t1.artistId AS 'artist_id',
+                  t1.artistName AS 'artist_name',
+                  t1.imageUrl AS 'image_url',
+                  t1.popularity,
+                  t1.total_count,
+                  t1.local_count,
+                  GROUP_CONCAT(t2.genre) AS 'genres'
+                FROM (
+                    SELECT
+                        t1.artistId,
+                        t1.artistName,
+                        t1.imageUrl,
+                        t1.popularity,
+                        COUNT(t3.eventId) AS total_count,
+                        COUNT(t6.eventid) AS local_count
+                    FROM artists t1
+                    JOIN event_artists t2 ON t2.artistId = t1.artistId
+                    JOIN events t3 ON t3.eventId = t2.eventId AND t3.eventStartLocalDate >= NOW() AND t3.eventStatus IN ('onsale', 'offsale')
+                    JOIN event_classifications t4 ON (t4.eventId = t3.eventId AND t4.classificationSegment = 'Music')
+                    JOIN user_locations t5 ON (t5.userId = %s)
+                    LEFT JOIN event_venues t6 ON (t6.eventId = t3.eventId AND lat_lng_distance(t6.venueLatitude, t6.venueLongitude, t5.latitude, t5.longitude) <= 50)
+                    GROUP BY 1,2,3,4
+                    HAVING COUNT(t3.eventId) >= 1 AND COUNT(t6.eventId) >= 1
+                    ORDER BY 4 DESC
+                    LIMIT 100
+                ) t1
+                JOIN
+                  artist_genres t2 ON t2.artistId = t1.artistId
+                GROUP BY 1,2,3,4,5,6
                 ORDER BY 4 DESC
-                LIMIT 100
-            ) t1
-            JOIN
-              artist_genres t2 ON t2.artistId = t1.artistId
-            GROUP BY 1,2,3,4,5,6
-            ORDER BY 4 DESC
-            """, [user])
+                """, [user])
+
+        except:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         data = self.dictfetchall(cursor)
 
