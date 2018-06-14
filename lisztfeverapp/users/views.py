@@ -58,7 +58,7 @@ class UserMain(APIView):
 
     def get(self, request, format=None):
 
-        user = request.user
+        user = request.user.id
 
         cursor.execute("""
             SELECT
