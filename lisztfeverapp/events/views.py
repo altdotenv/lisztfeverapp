@@ -5,9 +5,9 @@ from . import models, serializers
 from lisztfeverapp.users import models as user_models
 from lisztfeverapp.artists import models as artist_models
 from collections import OrderedDict
-from django.db import connection
-cursor = connection.cursor()
+from .. import db_connection as db
 
+cursor = db.cursor
 # Create your views here.
 
 class Event(APIView):
