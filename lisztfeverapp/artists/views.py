@@ -3,9 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from . import models, serializers
 from lisztfeverapp.users import models as user_models
-from .. import db_connection as db
-
-cursor = db.cursor
+from django.db import connection
 
 class Artist(APIView):
 
@@ -37,7 +35,7 @@ class SearchArtist(APIView):
 
                 terms = tuple(terms)
 
-                cursor.execute("""
+                query = """
                 SELECT
                   t1.artistId AS 'artist_id',
                   t1.artistName AS 'artist_name',
@@ -80,9 +78,13 @@ class SearchArtist(APIView):
                     artist_genres t2 ON t2.artistId = t1.artistId
                 GROUP BY 1,2,3,4,5,6
                 ORDER BY 4 DESC
-                """, [terms, user])
+                """
 
-                data = self.dictfetchall(cursor)
+                with connection.cursor() as cursor:
+                    cursor.execute(query, [terms, user])
+                    data = self.dictfetchall(cursor)
+                    if not data or not len(data):
+                        return Response(status=status.HTTP_409_CONFLICT)
 
                 if data:
 
@@ -94,7 +96,8 @@ class SearchArtist(APIView):
                 data = []
                 for i in terms:
                     i = '%'+i+'%'
-                    cursor.execute("""
+
+                    query = """
                         SELECT
                             t1.artistId AS 'artist_id',
                             t1.artistName AS 'artist_name',
@@ -109,11 +112,14 @@ class SearchArtist(APIView):
                         JOIN event_classifications t5 ON t5.eventId=t4.eventId AND t5.classificationSegment='Music'
                         WHERE t1.artistName LIKE %s
                         GROUP BY 1 ORDER BY 3 DESC LIMIT 100
-                    """, [i])
+                    """
 
-                    for artist in self.dictfetchall(cursor):
-                        artist['genres'] = artist['genres'].split(',')
-                        data.append(artist)
+                    with connection.cursor() as cursor:
+                        cursor.execute(query, [i])
+
+                        for artist in self.dictfetchall(cursor):
+                            artist['genres'] = artist['genres'].split(',')
+                            data.append(artist)
 
             return Response(data=data, status=status.HTTP_200_OK)
 

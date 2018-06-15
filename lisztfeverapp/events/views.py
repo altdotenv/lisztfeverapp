@@ -5,9 +5,8 @@ from . import models, serializers
 from lisztfeverapp.users import models as user_models
 from lisztfeverapp.artists import models as artist_models
 from collections import OrderedDict
-from .. import db_connection as db
+from django.db import connection
 
-cursor = db.cursor
 # Create your views here.
 
 class Event(APIView):
@@ -42,7 +41,7 @@ class EventByArtistId(APIView):
 
         if artist_id is not None:
 
-            cursor.execute("""
+            query = """
                 SELECT
                     t2.eventId AS 'event_id',
                     t2.eventName AS 'event_name',
@@ -59,9 +58,13 @@ class EventByArtistId(APIView):
                 JOIN event_classifications t4 ON t4.eventId=t2.eventId AND t4.classificationSegment='Music'
                 GROUP BY 1
                 ORDER BY 4 ASC
-            """, [artist_id])
+            """
 
-            data = self.dictfetchall(cursor)
+            with connection.cursor() as cursor:
+                cursor.execute(query, [artist_id])
+                data = self.dictfetchall(cursor)
+                if not data or not len(data):
+                    return Response(status=status.HTTP_409_CONFLICT)
 
             for i in data:
 

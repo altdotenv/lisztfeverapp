@@ -24,7 +24,6 @@ DATABASES = {
             'charset': 'utf8',
             'use_unicode': True,
         },
-        'CONN_MAX_AGE': 60,
     }
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True  # noqa F405

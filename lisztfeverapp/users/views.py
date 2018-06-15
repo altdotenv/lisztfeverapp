@@ -17,9 +17,7 @@ import json
 from datetime import date, timedelta, datetime
 from collections import OrderedDict
 import boto3
-from .. import db_connection as db
-
-cursor = db.cursor
+from django.db import connection
 
 # class UserMain(APIView):
 #
@@ -60,7 +58,7 @@ class UserMain(APIView):
 
         user = request.user
 
-        cursor.execute("""
+        query = """
             SELECT
               t1.artistId AS 'artist_id',
               t1.artistName AS 'artist_name',
@@ -92,9 +90,13 @@ class UserMain(APIView):
               artist_genres t2 ON t2.artistId = t1.artistId
             GROUP BY 1,2,3,4,5,6
             ORDER BY 4 DESC
-            """, [user])
+            """
 
-        data = self.dictfetchall(cursor)
+        with connection.cursor() as cursor:
+            cursor.execute(query, [user])
+            data = self.dictfetchall(cursor)
+            if not data or not len(data):
+                return Response(status=status.HTTP_409_CONFLICT)
 
         if data:
 
