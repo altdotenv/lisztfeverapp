@@ -24,9 +24,9 @@ const ArtistDisplay = (props, context) => (
           ) : null}
           {props.artist.local_count ? (
             props.artist.total_count > 1 ? (
-              <div className={styles.eventCount}>{props.artist.total_count} Total Events / {props.artist.local_count} Neer You</div>
+              <div className={styles.eventCount}>{props.artist.total_count} Total Events / {props.artist.local_count} Near You</div>
             ) : (
-              <div className={styles.eventCount}>{props.artist.total_count} Total Event / {props.artist.local_count} Neer You</div>
+              <div className={styles.eventCount}>{props.artist.total_count} Total Event / {props.artist.local_count} Near You</div>
             )
           ) : (
             props.artist.total_count > 1 ? (
