@@ -3,12 +3,28 @@ import { actionCreators as userActions } from "redux/modules/user";
 import Container from "./container";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { match: { params: { path } } } = ownProps;
+  const {
+    match: {
+      params: { path }
+    }
+  } = ownProps;
+  const {
+    match: {
+      params: { artistId }
+    }
+  } = ownProps;
+  if (artistId) {
+    return {
+      redirectSignedRequest: signed_request => {
+        dispatch(userActions.redirectSignedRequest(signed_request, artistId));
+      }
+    };
+  }
   return {
     redirectSignedRequest: signed_request => {
-      dispatch(userActions.redirectSignedRequest(signed_request, path))
+      dispatch(userActions.redirectSignedRequest(signed_request, path));
     }
-  }
-}
+  };
+};
 
 export default connect(null, mapDispatchToProps)(Container);

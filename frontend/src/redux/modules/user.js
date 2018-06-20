@@ -6,20 +6,20 @@ const SAVE_TOKEN = "SAVE_TOKEN";
 const LOGOUT = "LOGOUT";
 
 // action creators
-function saveToken(token){
+function saveToken(token) {
   return {
     type: SAVE_TOKEN,
     token
-  }
+  };
 }
 function logout() {
   return {
     type: LOGOUT
-  }
+  };
 }
 //API actions
-function facebookLogin(access_token){
-  return function(dispatch){
+function facebookLogin(access_token) {
+  return function(dispatch) {
     fetch("/user/login/facebook/", {
       method: "POST",
       headers: {
@@ -29,48 +29,53 @@ function facebookLogin(access_token){
         access_token
       })
     })
-    .then(response => response.json())
-    .then(json => {
-      if (json.token) {
-        dispatch(saveToken(json.token));
-      }
-    })
-    .catch(err => console.log(err));
+      .then(response => response.json())
+      .then(json => {
+        if (json.token) {
+          dispatch(saveToken(json.token));
+        }
+      })
+      .catch(err => console.log(err));
   };
 }
 
 function redirectListenMusic(artist_id) {
   return (dispatch, getState) => {
-    const { user: { token } } = getState();
+    const {
+      user: { token }
+    } = getState();
     fetch(`/user/listen/${artist_id}/`, {
       headers: {
         Authorization: `JWT ${token}`,
         "Content-Type": "application/json"
       }
-    })
-    .then(response => {
+    }).then(response => {
       if (response.status === 401) {
         dispatch(logout());
       } else {
-        dispatch(push('/close/browser'))
+        dispatch(push("/close/browser"));
       }
-    })
+    });
   };
 }
 
-function redirectSignedRequest(signed_request, path){
+function redirectSignedRequest(signed_request, path) {
   return async (dispatch, getState) => {
     const tokenBySignedRequest = await facebookSignedRequest(signed_request);
-    if(tokenBySignedRequest === 401){
-      console.log("Authorization error")
-      dispatch(push("/error"))
+    if (tokenBySignedRequest === 401) {
+      console.log("Authorization error");
+      dispatch(push("/error"));
     }
-    dispatch(saveToken(tokenBySignedRequest.token, true))
-    dispatch(push(`/${path}`))
-  }
+    dispatch(saveToken(tokenBySignedRequest.token, true));
+    if (path !== "feed" || path !== "plan") {
+      dispatch(push(`/event/artist/${path}`));
+    } else {
+      dispatch(push(`/${path}`));
+    }
+  };
 }
 
-function facebookSignedRequest(signed_request){
+function facebookSignedRequest(signed_request) {
   return fetch("/user/signed_request/", {
     method: "POST",
     headers: {
@@ -80,17 +85,17 @@ function facebookSignedRequest(signed_request){
       signed_request
     })
   })
-  .then(response => {
-    if(response === 401){
-      return 401;
-    }
-    return response.json()
-  })
-  .catch(err => console.log(err));
+    .then(response => {
+      if (response === 401) {
+        return 401;
+      }
+      return response.json();
+    })
+    .catch(err => console.log(err));
 }
 
-function usernameLogin(username, password){
-  return function(dispatch){
+function usernameLogin(username, password) {
+  return function(dispatch) {
     fetch("/rest-auth/login/", {
       method: "POST",
       headers: {
@@ -101,18 +106,18 @@ function usernameLogin(username, password){
         password
       })
     })
-    .then(response => response.json())
-    .then(json => {
-      if (json.token) {
-        dispatch(saveToken(json.token));
-      }
-    })
-    .catch(err => console.log(err));
-  }
+      .then(response => response.json())
+      .then(json => {
+        if (json.token) {
+          dispatch(saveToken(json.token));
+        }
+      })
+      .catch(err => console.log(err));
+  };
 }
 
-function createAccount(username, password, email, name){
-  return function(dispatch){
+function createAccount(username, password, email, name) {
+  return function(dispatch) {
     fetch("/rest-auth/registration/", {
       method: "POST",
       headers: {
@@ -126,12 +131,12 @@ function createAccount(username, password, email, name){
         name
       })
     })
-    .then(response => response.json())
-    .then(json => {
-      dispatch(saveToken(json.token));
-    })
-    .catch(err => console.log(err));
-  }
+      .then(response => response.json())
+      .then(json => {
+        dispatch(saveToken(json.token));
+      })
+      .catch(err => console.log(err));
+  };
 }
 
 // initial state
@@ -143,8 +148,8 @@ const initialState = {
 
 // reducer
 
-function reducer(state=initialState, action){
-  switch (action.type){
+function reducer(state = initialState, action) {
+  switch (action.type) {
     case SAVE_TOKEN:
       return applySetToken(state, action);
     case LOGOUT:
@@ -156,7 +161,7 @@ function reducer(state=initialState, action){
 
 // reducer functions
 function applySetToken(state, action) {
-  const {token} = action;
+  const { token } = action;
   localStorage.setItem("jwt", token);
   return {
     ...state,
@@ -183,7 +188,7 @@ const actionCreators = {
   redirectListenMusic
 };
 
-export { actionCreators }
+export { actionCreators };
 // reducer export
 
 export default reducer;

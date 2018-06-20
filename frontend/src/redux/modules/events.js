@@ -11,11 +11,11 @@ const PLAN_LIST = "PLAN_LIST";
 const UNPLAN_LIST = "UNPLAN_LIST";
 
 // action creators
-function setFeed(json){
+function setFeed(json) {
   return {
     type: SET_FEED,
     feed: json
-  }
+  };
 }
 
 // function setFeed(json){
@@ -30,41 +30,41 @@ function setEventList(eventList) {
   return {
     type: SET_EVENT_LIST,
     eventList
-  }
+  };
 }
 
-function doPlanEvent(eventId){
+function doPlanEvent(eventId) {
   return {
     type: PLAN_EVENT,
     eventId
-  }
+  };
 }
 
-function doUnplanEvent(eventId){
+function doUnplanEvent(eventId) {
   return {
     type: UNPLAN_EVENT,
     eventId
-  }
+  };
 }
 
-function setPlanList(planList){
+function setPlanList(planList) {
   return {
     type: SET_PLAN_LIST,
     planList
-  }
+  };
 }
-function doPlanList(eventId){
+function doPlanList(eventId) {
   return {
     type: PLAN_LIST,
     eventId
-  }
+  };
 }
 
-function doUnplanList(eventId){
+function doUnplanList(eventId) {
   return {
     type: UNPLAN_LIST,
     eventId
-  }
+  };
 }
 
 // api actions
@@ -95,8 +95,10 @@ function doUnplanList(eventId){
 
 function getFeed() {
   return (dispatch, getState) => {
-    const { user: { token } } = getState();
-    fetch('/user/', {
+    const {
+      user: { token }
+    } = getState();
+    fetch("/user/", {
       headers: {
         Authorization: `JWT ${token}`,
         "Content-Type": "application/json"
@@ -109,7 +111,7 @@ function getFeed() {
         return response.json();
       })
       .then(response => {
-        return response
+        return response;
       })
       .then(json => {
         dispatch(setFeed(json));
@@ -119,9 +121,11 @@ function getFeed() {
 
 function getEventByArtistId(artistId) {
   return async (dispatch, getState) => {
-    const { user: { token } } = getState();
+    const {
+      user: { token }
+    } = getState();
     const eventList = await getEvents(token, artistId);
-    if(eventList === 401){
+    if (eventList === 401) {
       dispatch(userActions.logout());
     }
     dispatch(setEventList(eventList));
@@ -144,57 +148,60 @@ function getEvents(token, artistId) {
     .then(json => json);
 }
 
-
-function planEvent(eventId){
+function planEvent(eventId) {
   return (dispatch, getState) => {
     dispatch(doPlanEvent(eventId));
-    const { user: {token} } = getState()
+    const {
+      user: { token }
+    } = getState();
     fetch(`/event/${eventId}/plan/`, {
       method: "POST",
       headers: {
         Authorization: `JWT ${token}`
       }
-    })
-    .then(response => {
-      if(response.status === 401){
+    }).then(response => {
+      if (response.status === 401) {
         dispatch(userActions.logout());
-      } else if (!response.ok){
+      } else if (!response.ok) {
         dispatch(doUnplanEvent(eventId));
       }
     });
   };
 }
 
-function unplanEvent(eventId){
+function unplanEvent(eventId) {
   return (dispatch, getState) => {
     dispatch(doUnplanEvent(eventId));
-    const { user: {token} } = getState()
+    const {
+      user: { token }
+    } = getState();
     fetch(`/event/${eventId}/unplan/`, {
       method: "DELETE",
       headers: {
         Authorization: `JWT ${token}`
       }
-    })
-    .then(response => {
-      if(response.status === 401){
+    }).then(response => {
+      if (response.status === 401) {
         dispatch(userActions.logout());
-      } else if (!response.ok){
+      } else if (!response.ok) {
         dispatch(doPlanEvent(eventId));
       }
     });
   };
 }
 
-function getEventPlans(){
+function getEventPlans() {
   return (dispatch, getState) => {
-    const { user: { token } } = getState();
+    const {
+      user: { token }
+    } = getState();
     fetch("/user/plans/", {
       headers: {
         Authorization: `JWT ${token}`
       }
     })
       .then(response => {
-        if(response.status === 401) {
+        if (response.status === 401) {
           dispatch(userActions.logout());
         }
         return response.json();
@@ -205,47 +212,47 @@ function getEventPlans(){
   };
 }
 
-function planList(eventId){
+function planList(eventId) {
   return (dispatch, getState) => {
     dispatch(doPlanList(eventId));
-    const { user: {token} } = getState()
+    const {
+      user: { token }
+    } = getState();
     fetch(`/event/${eventId}/plan/`, {
       method: "POST",
       headers: {
         Authorization: `JWT ${token}`
       }
-    })
-    .then(response => {
-      if(response.status === 401){
+    }).then(response => {
+      if (response.status === 401) {
         dispatch(userActions.logout());
-      } else if (!response.ok){
+      } else if (!response.ok) {
         dispatch(doUnplanList(eventId));
       }
     });
   };
 }
 
-function unplanList(eventId){
+function unplanList(eventId) {
   return (dispatch, getState) => {
     dispatch(doUnplanList(eventId));
-    const { user: {token} } = getState()
+    const {
+      user: { token }
+    } = getState();
     fetch(`/event/${eventId}/unplan/`, {
       method: "DELETE",
       headers: {
         Authorization: `JWT ${token}`
       }
-    })
-    .then(response => {
-      if(response.status === 401){
+    }).then(response => {
+      if (response.status === 401) {
         dispatch(userActions.logout());
-      } else if (!response.ok){
+      } else if (!response.ok) {
         dispatch(doPlanList(eventId));
       }
     });
   };
 }
-
-
 
 // initial state
 const initialState = {
@@ -257,8 +264,8 @@ const initialState = {
 // };
 
 // reducer
-function reducer(state = initialState, action){
-  switch(action.type){
+function reducer(state = initialState, action) {
+  switch (action.type) {
     case SET_FEED:
       return applySetFeed(state, action);
     case SET_EVENT_LIST:
@@ -278,13 +285,13 @@ function reducer(state = initialState, action){
   }
 }
 // reducer functions
-function applySetFeed(state, action){
+function applySetFeed(state, action) {
   const { feed } = action;
   return {
     ...state,
     feed
-  }
-};
+  };
+}
 
 // function applySetFeed(state, action){
 //   const { total_pages, feed } = action;
@@ -295,41 +302,39 @@ function applySetFeed(state, action){
 //   return {...state, feed: updatedFeed, total_pages: total_pages}
 // };
 
-function applySetEventList(state, action){
+function applySetEventList(state, action) {
   const { eventList } = action;
   return {
     ...state,
     eventList
-  }
+  };
 }
 
-function applyPlanEvent(state, action){
+function applyPlanEvent(state, action) {
   const { eventId } = action;
   const { eventList } = state;
   const updatedEventList = eventList.map(event => {
-    console.log(event)
-    if(event.event_id === eventId) {
-      return {...event, is_planned: true}
+    if (event.event_id === eventId) {
+      return { ...event, is_planned: true };
     }
-    return event
+    return event;
   });
-  console.log(updatedEventList)
-  return {...state, eventList: updatedEventList};
+  return { ...state, eventList: updatedEventList };
 }
 
-function applyUnplanEvent(state, action){
+function applyUnplanEvent(state, action) {
   const { eventId } = action;
   const { eventList } = state;
   const updatedEventList = eventList.map(event => {
-    if(event.event_id === eventId) {
-      return {...event, is_planned: false}
+    if (event.event_id === eventId) {
+      return { ...event, is_planned: false };
     }
-    return event
+    return event;
   });
-  return {...state, eventList: updatedEventList};
+  return { ...state, eventList: updatedEventList };
 }
 
-function applySetPlanList(state, action){
+function applySetPlanList(state, action) {
   const { planList } = action;
   return {
     ...state,
@@ -337,28 +342,28 @@ function applySetPlanList(state, action){
   };
 }
 
-function applyPlanList(state, action){
+function applyPlanList(state, action) {
   const { eventId } = action;
   const { planList } = state;
   const updatedPlanList = planList.map(plan => {
-    if(plan.event.eventid === eventId) {
-      return {...plan, event: {...plan['event'], is_planned: true }}
+    if (plan.event.eventid === eventId) {
+      return { ...plan, event: { ...plan["event"], is_planned: true } };
     }
-    return plan
+    return plan;
   });
-  return {...state, planList: updatedPlanList};
+  return { ...state, planList: updatedPlanList };
 }
 
-function applyUnplanList(state, action){
+function applyUnplanList(state, action) {
   const { eventId } = action;
   const { planList } = state;
   const updatedPlanList = planList.map(plan => {
-    if(plan.event.eventid === eventId) {
-      return {...plan, event: {...plan['event'], is_planned: false }}
+    if (plan.event.eventid === eventId) {
+      return { ...plan, event: { ...plan["event"], is_planned: false } };
     }
-    return plan
+    return plan;
   });
-  return {...state, planList: updatedPlanList};
+  return { ...state, planList: updatedPlanList };
 }
 
 // exports

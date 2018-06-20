@@ -16,19 +16,19 @@ class Container extends Component {
   }
   componentDidUpdate = (prevProps, prevState) => {
     const { getEventByArtistId } = this.props;
-    if(prevProps.match.params !== this.props.match.params) {
+    if (prevProps.match.params.artistId !== this.props.match.params.artistId) {
       getEventByArtistId();
     }
-  }
-  componentWillReceiveProps = (nextProps) => {
+  };
+  componentWillReceiveProps = nextProps => {
     if (nextProps.eventList) {
       this.setState({
         loading: false,
         eventList: nextProps.eventList
       });
     }
-  }
-  render(){
+  };
+  render() {
     const { eventList } = this.props;
     return <Event {...this.state} eventList={eventList} />;
   }

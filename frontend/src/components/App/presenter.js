@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 import PropTypes from "prop-types";
 import { Route, Switch } from "react-router-dom";
-import './styles.scss';
-import Footer from 'components/Footer';
+import "./styles.scss";
+import Footer from "components/Footer";
 import Auth from "components/Auth";
 import Navigation from "components/Navigation";
 import Feed from "components/Feed";
@@ -14,14 +14,14 @@ import ListenMusic from "components/ListenMusic";
 import CloseWebview from "components/CloseWebview";
 
 const App = props => [
-  props.isLoggedIn ? <Navigation key={1}/> : null,
+  props.isLoggedIn ? <Navigation key={1} /> : null,
   props.isLoggedIn ? <PrivateRoutes key={2} /> : <PublicRoutes key={2} />,
   <Footer key={3} />
-]
+];
 
 App.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired
-}
+};
 
 const PrivateRoutes = props => (
   <Switch>
@@ -32,6 +32,11 @@ const PrivateRoutes = props => (
     <Route exact path="/search/:searchTerm" component={Search} />
     <Route exact path="/signed_request/plan" component={Plan} />
     <Route exact path="/signed_request/feed" component={Feed} />
+    <Route
+      exact
+      path="/signed_request/event/artist/:artistId"
+      component={Event}
+    />
     <Route exact path="/listen/:artistId" component={ListenMusic} />
     <Route exact path="/close/browser" component={CloseWebview} />
   </Switch>
@@ -41,6 +46,11 @@ const PublicRoutes = props => (
   <Switch>
     <Route exact path="/" component={Auth} />
     <Route exact path="/signed_request/:path/" component={SignedRequest} />
+    <Route
+      exact
+      path="/signed_request/event/artist/:artistId"
+      component={SignedRequest}
+    />
   </Switch>
 );
 
