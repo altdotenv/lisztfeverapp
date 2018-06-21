@@ -45,7 +45,7 @@ const PrivateRoutes = props => (
 const PublicRoutes = props => (
   <Switch>
     <Route exact path="/" component={Auth} />
-    <Route exact path="/signed_request/:path/" component={SignedRequest} />
+    <Route exact path="/signed_request/:path" component={SignedRequest} />
     <Route
       exact
       path="/signed_request/event/artist/:artistId"

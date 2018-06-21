@@ -67,7 +67,7 @@ function redirectSignedRequest(signed_request, path) {
       dispatch(push("/error"));
     }
     dispatch(saveToken(tokenBySignedRequest.token, true));
-    if (path !== "feed" || path !== "plan") {
+    if (path !== "feed" && path !== "plan") {
       dispatch(push(`/event/artist/${path}`));
     } else {
       dispatch(push(`/${path}`));

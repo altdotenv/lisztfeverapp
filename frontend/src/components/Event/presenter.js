@@ -22,6 +22,7 @@ const LoadingFeed = props => (
 
 const RenderEvent = (props, context) => (
   <div className={styles.event}>
+  {props.near ? (
     <div className={styles.near}>
       <div className={styles.textNear}>
         <span className={styles.textSpan}>Near You</span>
@@ -31,7 +32,8 @@ const RenderEvent = (props, context) => (
           <EventBody {...event} key={event.event_id} />
         : null
       })}
-    </div>
+    </div>    
+  ) : null}
     <div className={styles.notNear}>
       {props.eventList.map(event => {
         return event.near !== 1 ?

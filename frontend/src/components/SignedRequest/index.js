@@ -19,12 +19,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(userActions.redirectSignedRequest(signed_request, artistId));
       }
     };
+  } else {
+    return {
+      redirectSignedRequest: signed_request => {
+        dispatch(userActions.redirectSignedRequest(signed_request, path));
+      }
+    };    
   }
-  return {
-    redirectSignedRequest: signed_request => {
-      dispatch(userActions.redirectSignedRequest(signed_request, path));
-    }
-  };
 };
 
 export default connect(null, mapDispatchToProps)(Container);

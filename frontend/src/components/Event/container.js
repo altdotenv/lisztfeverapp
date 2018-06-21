@@ -30,7 +30,20 @@ class Container extends Component {
   };
   render() {
     const { eventList } = this.props;
-    return <Event {...this.state} eventList={eventList} />;
+    const nearBool = this._nearBool();
+    return <Event {...this.state} eventList={eventList} near={nearBool}/>;
+  }
+  _nearBool = () => {
+    const { eventList } = this.props;
+    if(eventList){
+      for (var i=0; i<=eventList.length; i++){
+        if(eventList[i].near === 1){
+          return true
+        } else {
+          return false
+        }
+      };
+    }
   }
 }
 

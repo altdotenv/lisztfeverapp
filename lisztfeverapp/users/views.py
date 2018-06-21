@@ -57,7 +57,7 @@ class UserMain(APIView):
     def get(self, request, format=None):
 
         user = request.user
-
+        
         query = """
             SELECT
               t1.artistId AS 'artist_id',
