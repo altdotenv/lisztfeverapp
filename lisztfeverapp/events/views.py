@@ -39,7 +39,9 @@ class EventByArtistId(APIView):
 
     def get(self, request, artist_id, format=None):
 
-        if artist_id is not None:
+        user = request.user
+
+        if artist_id and user:
 
             query = """
                 SELECT
@@ -51,17 +53,20 @@ class EventByArtistId(APIView):
                     t2.eventStatus AS 'event_status',
                     t2.primaryEventUrl AS 'primary_event_url',
                     GROUP_CONCAT(t3.venueName SEPARATOR '||') AS 'venue_name',
-                    GROUP_CONCAT(t3.venueCity SEPARATOR '||') AS 'venue_city'
+                    GROUP_CONCAT(t3.venueCity SEPARATOR '||') AS 'venue_city',
+                    CASE WHEN (lat_lng_distance(t3.venueLatitude, t3.venueLongitude, t5.latitude, t5.longitude) <= 50) THEN 1
+                        ELSE 2 END AS 'near'
                 FROM event_artists t1
                 JOIN events t2 ON (t2.eventId=t1.eventId AND t1.artistId= %s AND eventStartLocalDate >= NOW() AND t2.eventStatus IN ('onsale', 'offsale'))
                 JOIN event_venues t3 ON (t3.eventId=t2.eventId)
                 JOIN event_classifications t4 ON t4.eventId=t2.eventId AND t4.classificationSegment='Music'
+                JOIN user_locations t5 ON (t5.userId= %s)
                 GROUP BY 1
-                ORDER BY 4 ASC
+                ORDER BY 10 ASC, 4 ASC
             """
 
             with connection.cursor() as cursor:
-                cursor.execute(query, [artist_id])
+                cursor.execute(query, [artist_id, user])
                 data = self.dictfetchall(cursor)
                 if not data or not len(data):
                     return Response(status=status.HTTP_409_CONFLICT)

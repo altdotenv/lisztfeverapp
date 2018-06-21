@@ -9,7 +9,7 @@ const Event = (props, context) => {
     return <LoadingFeed />;
   } else if (props.eventList.length < 1) {
     return <NotFound text={context.t("No Events :(")} />;
-  } else if(props.eventList.length >0 ) {
+  } else if (props.eventList.length > 0) {
     return <RenderEvent {...props} />;
   }
 };
@@ -18,19 +18,35 @@ const LoadingFeed = props => (
   <div className={styles.loading}>
     <Loading />
   </div>
-)
+);
 
-const RenderEvent = props => (
+const RenderEvent = (props, context) => (
   <div className={styles.event}>
-    {props.eventList.map(event => <EventBody {...event} key={event.event_id} />)}
+    <div className={styles.near}>
+      <div className={styles.textNear}>
+        <span className={styles.textSpan}>Near You</span>
+      </div>
+      {props.eventList.map(event => {
+        return event.near === 1 ?
+          <EventBody {...event} key={event.event_id} />
+        : null
+      })}
+    </div>
+    <div className={styles.notNear}>
+      {props.eventList.map(event => {
+        return event.near !== 1 ?
+          <EventBody {...event} key={event.event_id} />
+        : null
+      })}
+    </div>
   </div>
-)
+);
 
-const NotFound = props => <span className={styles.notFound}>{props.text}</span>
+const NotFound = props => <span className={styles.notFound}>{props.text}</span>;
 
 Event.contextTypes = {
   t: PropTypes.func.isRequired
-}
+};
 
 Event.propTypes = {
   loading: PropTypes.bool.isRequired,

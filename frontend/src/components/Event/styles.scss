@@ -12,4 +12,21 @@
   width: 100%;
   max-width: $max-page-width;
   margin: 0 auto;
+  .near {
+    width: 100%;
+    border-bottom: 1px solid $main-pink;
+    padding-top: 10px;
+    .text-near {
+      width: 100%;
+      text-align: center;
+      border-bottom: 1px solid $main-pink;
+      line-height: 0.1em;
+      color: $main-pink;
+      margin-top: 10px;
+      .text-span {
+        background: $bg-color;
+        padding: 0 10px;
+      }
+    }
+  }
 }
