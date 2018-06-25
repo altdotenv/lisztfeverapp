@@ -128,7 +128,7 @@ class UserPlan(APIView):
             try:
                 found_venue = event_models.EventVenues.objects.filter(eventid=i['eventid'])
             except event_models.EventVenues.DoesNotExist:
-                continue
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
             venue_serializer = event_serializers.EventVenuesSerializer(found_venue, many=True)
 
