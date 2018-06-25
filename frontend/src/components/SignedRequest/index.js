@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       redirectSignedRequest: signed_request => {
         dispatch(userActions.redirectSignedRequest(signed_request, path));
       }
-    };    
+    };
   }
 };
 

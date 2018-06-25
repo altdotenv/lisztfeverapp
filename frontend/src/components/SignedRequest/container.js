@@ -20,7 +20,6 @@ class Container extends Component {
             version    : 'v2.11',
             xfbml      : true
         });
-
     };
     // Load the SDK Asynchronously
     (function(d, s, id){
@@ -37,7 +36,7 @@ class Container extends Component {
           redirectSignedRequest(thread_context['signed_request'])
         },
         function error(err){
-          console.log(err)
+          console.log(err);
         }
       );
     };

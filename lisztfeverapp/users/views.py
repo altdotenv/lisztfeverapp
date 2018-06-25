@@ -57,7 +57,7 @@ class UserMain(APIView):
     def get(self, request, format=None):
 
         user = request.user
-        
+
         query = """
             SELECT
               t1.artistId AS 'artist_id',
@@ -128,7 +128,7 @@ class UserPlan(APIView):
             try:
                 found_venue = event_models.EventVenues.objects.filter(eventid=i['eventid'])
             except event_models.EventVenues.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
+                continue
 
             venue_serializer = event_serializers.EventVenuesSerializer(found_venue, many=True)
 
