@@ -59,8 +59,6 @@ PlanDisplay.propTypes = {
       eventimageurl: PropTypes.string.isRequired,
       primaryeventurl: PropTypes.string.isRequired,
       eventstatus: PropTypes.string,
-      maxprice: PropTypes.number,
-      minprice: PropTypes.number,
       is_planned: PropTypes.bool.isRequired,
     }).isRequired,
     venue: PropTypes.arrayOf(

@@ -85,7 +85,7 @@ class EventByArtistId(APIView):
 
                 i.update({'venues':venue_list})
 
-                is_planned = self.get_is_planned(request, i['event_id'])
+                is_planned = self.get_is_planned(user, i['event_id'])
                 i.update({'is_planned':is_planned})
 
                 http_to_https = i.get('primary_event_url')
@@ -101,11 +101,11 @@ class EventByArtistId(APIView):
 
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def get_is_planned(self, request, event_id):
+    def get_is_planned(self, user, event_id):
 
         try:
             user_models.Plan.objects.get(
-                user__id=request.user.id, event__eventid=event_id)
+                user=user, event=event_id)
             return True
         except user_models.Plan.DoesNotExist:
             return False
@@ -122,7 +122,7 @@ class PlanEvent(APIView):
 
     def post(self, request, event_id, format=None):
 
-        user = request.user
+        user = request.user.username
 
         try:
             found_event = models.Events.objects.get(eventid=event_id)
@@ -132,7 +132,7 @@ class PlanEvent(APIView):
         try:
             preexisting_plan = user_models.Plan.objects.get(
                 user=user,
-                event=found_event
+                event=found_event.eventid
             )
             return Response(status=status.HTTP_304_NOT_MODIFIED)
 
@@ -140,7 +140,7 @@ class PlanEvent(APIView):
 
             new_plan = user_models.Plan.objects.create(
                 user=user,
-                event=found_event
+                event=found_event.eventid
             )
             new_plan.save()
 
@@ -150,7 +150,7 @@ class UnPlanEvent(APIView):
 
     def delete(self, request, event_id, format=None):
 
-        user = request.user
+        user = request.user.username
 
         try:
             found_event = models.Events.objects.get(eventid=event_id)
@@ -160,7 +160,7 @@ class UnPlanEvent(APIView):
         try:
             preexisting_plan = user_models.Plan.objects.get(
                 user=user,
-                event=found_event
+                event=found_event.eventid
             )
             preexisting_plan.delete()
 

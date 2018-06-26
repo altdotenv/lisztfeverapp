@@ -73,7 +73,6 @@ class User(AbstractBaseUser):
     created_at = UnixTimestampField(db_column='createdAt', null=True)
     last_session_at = UnixTimestampField(db_column='lastSessionAt', null=True)
     sessions = models.IntegerField(null=True, default=0)
-    user_events = models.ManyToManyField(event_models.Events, through='Plan', related_name="user_events")
 
     USERNAME_FIELD = 'username'
     objects = UserManager()
@@ -81,12 +80,20 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.username
 
-
 class Plan(models.Model):
 
-    user = models.ForeignKey(User, db_column='userId', to_field='username', on_delete=models.CASCADE, related_name='user_plans') #Without related_name default is plan_set
-    event = models.ForeignKey(event_models.Events, db_column='eventId', on_delete=models.CASCADE)
+    user = models.CharField(max_length=255, db_column='userId', null=True)
+    event = models.CharField(max_length=255, db_column='eventId', null=True)
     updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
 
     class Meta:
         unique_together = (('user', 'event'),)
+
+# class Plan(models.Model):
+#
+#     user = models.ForeignKey(User, db_column='userId', to_field='username', on_delete=models.CASCADE, related_name='user_plans')
+#     event = models.ForeignKey(event_models.Events, db_column='eventId', on_delete=models.CASCADE)
+#     updated_at = UnixTimestampField(auto_created=True, db_column='updatedAt', null=True)
+#
+#     class Meta:
+#         unique_together = (('user', 'event'),)

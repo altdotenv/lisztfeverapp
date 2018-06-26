@@ -41,11 +41,11 @@ class MyUserCreationForm(UserCreationForm):
 #     list_display = ("username", "name", "is_superuser")
 #     search_fields = ["name"]
 
-@admin.register(models.Plan)
-class PlanAdmin(admin.ModelAdmin):
-
-    list_display = (
-        "user_id",
-        "event_id",
-        "updated_at",
-    )
+# @admin.register(models.Plan)
+# class PlanAdmin(admin.ModelAdmin):
+#
+#     list_display = (
+#         "user_id",
+#         "event_id",
+#         "updated_at",
+#     )

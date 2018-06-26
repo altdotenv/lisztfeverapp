@@ -19,38 +19,6 @@ from collections import OrderedDict
 import boto3
 from django.db import connection
 
-# class UserMain(APIView):
-#
-#     def get(self, request, format=None):
-#
-#         page = request.query_params.get('page', None)
-#
-#         if page:
-#
-#             try:
-#                 found_artist = artist_models.Artists.objects.all()
-#             except artist_models.Artists.DoesNotExist:
-#                 return Response(status=status.HTTP_404_NOT_FOUND)
-#
-#             paginator = Paginator(found_artist, 10)
-#
-#             total_pages = paginator.num_pages
-#
-#             artists = paginator.get_page(page)
-#
-#             serializer = artist_serializers.ArtistAllSerializer(artists, many=True)
-#
-#             results = {}
-#
-#             results.update({"total_pages": total_pages})
-#
-#             results.update({"data": serializer.data})
-#
-#             return Response(data=results, status=status.HTTP_200_OK)
-#
-#         else:
-#
-#             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class UserMain(APIView):
 
@@ -113,38 +81,127 @@ class UserMain(APIView):
             for row in cursor.fetchall()
         ]
 
-
 class UserPlan(APIView):
 
     def get(self, request, format=None):
 
         user = request.user
-        user_plan = user.user_events.all().filter(eventstartlocaldate__gte=date.today()).order_by('eventstartlocaldate')
-        event_serializer = event_serializers.EventSerializer(user_plan, many=True, context={'request': request})
+
+        query = """
+            SELECT
+              t2.eventId AS 'eventid',
+              t2.eventName AS 'eventname',
+              t2.eventStartLocalDate AS 'eventstartlocaldate',
+              t2.eventImageUrl AS 'eventimageurl',
+              t2.primaryEventUrl AS 'primaryeventurl',
+              t2.eventStatus AS 'eventstatus',
+              GROUP_CONCAT(t3.venueId SEPARATOR '||') AS 'venueid',
+              GROUP_CONCAT(t3.venueName SEPARATOR '||') AS 'venuename',
+              GROUP_CONCAT(t3.venueCity SEPARATOR '||') AS 'venuecity',
+              GROUP_CONCAT(t3.venueStreet SEPARATOR '||') AS 'venuestreet'
+            FROM users_plan t1
+            JOIN events t2 ON t1.eventId=t2.eventId AND t2.eventStartLocalDate >= NOW()
+            JOIN event_venues t3 ON t2.eventId=t3.eventId
+            WHERE t1.userId=%s
+            GROUP BY 1
+            ORDER BY 3 ASC
+        """
+
+        with connection.cursor() as cursor:
+            cursor.execute(query, [user])
+            data = self.dictfetchall(cursor)
 
         result = []
-        for i in event_serializer.data:
-            venue_added_event = {}
-            try:
-                found_venue = event_models.EventVenues.objects.filter(eventid=i['eventid'])
-            except event_models.EventVenues.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
 
-            venue_serializer = event_serializers.EventVenuesSerializer(found_venue, many=True)
+        if data:
 
-            venue = []
-            for j in venue_serializer.data:
-                venue.append(dict(OrderedDict(j)))
+            for i in data:
 
-            http_to_https = i.get('primaryeventurl')
-            if http_to_https and http_to_https[:5] == 'http:':
-                http_to_https = 'https:' + http_to_https[5:]
-                i['primaryeventurl'] = http_to_https
+                if i.get('venueid'):
+                    split_venueid = i['venueid'].split('||')
+                    split_venuename = i['venuename'].split('||') if i.get('venuename') else ['Not Specified']
+                    split_venuecity = i['venuecity'].split('||') if i.get('venuecity') else ['Not Specified']
+                    split_venuestreet = i['venuestreet'].split('||') if i.get('venuestreet') else ['Not Specified']
+                    i.pop('venueid')
+                    i.pop('venuename')
+                    i.pop('venuecity')
+                    i.pop('venuestreet')
 
-            venue_added_event.update({'event':i, 'venue': venue})
-            result.append(venue_added_event)
+
+                venue = []
+                for venueid, venuename, venuecity, venuestreet in zip(split_venueid, split_venuename, split_venuecity, split_venuestreet):
+                    single_venue = {}
+                    single_venue.update({
+                        'venueid':venueid,
+                        'venuename':venuename,
+                        'venuecity':venuecity,
+                        'venuestreet':venuestreet
+                    })
+                    venue.append(single_venue)
+
+                is_planned = self.get_is_planned(user, i['eventid'])
+                i.update({'is_planned':is_planned})
+
+                http_to_https = i.get('primaryeventurl')
+                if http_to_https and http_to_https[:5] == 'http:':
+                    http_to_https = 'https:' + http_to_https[5:]
+                    i['primaryeventurl'] = http_to_https
+
+                venue_added_event = {}
+                venue_added_event.update({'event':i, 'venue': venue})
+                result.append(venue_added_event)
 
         return Response(data=result, status=status.HTTP_200_OK)
+
+    def get_is_planned(self, user, event_id):
+
+        try:
+            models.Plan.objects.get(
+                user=user, event=event_id)
+            return True
+        except models.Plan.DoesNotExist:
+            return False
+
+    def dictfetchall(self, cursor):
+        "Return all rows from a cursor as a dict"
+        columns = [col[0] for col in cursor.description]
+        return [
+            dict(zip(columns, row))
+            for row in cursor.fetchall()
+        ]
+
+
+# class UserPlan(APIView):
+#
+#     def get(self, request, format=None):
+#
+#         user = request.user
+#         user_plan = user.user_events.all().filter(eventstartlocaldate__gte=date.today()).order_by('eventstartlocaldate')
+#         event_serializer = event_serializers.EventSerializer(user_plan, many=True, context={'request': request})
+#
+#         result = []
+#         for i in event_serializer.data:
+#             venue_added_event = {}
+#             try:
+#                 found_venue = event_models.EventVenues.objects.filter(eventid=i['eventid'])
+#             except event_models.EventVenues.DoesNotExist:
+#                 return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#             venue_serializer = event_serializers.EventVenuesSerializer(found_venue, many=True)
+#
+#             venue = []
+#             for j in venue_serializer.data:
+#                 venue.append(dict(OrderedDict(j)))
+#
+#             http_to_https = i.get('primaryeventurl')
+#             if http_to_https and http_to_https[:5] == 'http:':
+#                 http_to_https = 'https:' + http_to_https[5:]
+#                 i['primaryeventurl'] = http_to_https
+#
+#             venue_added_event.update({'event':i, 'venue': venue})
+#             result.append(venue_added_event)
+#
+#         return Response(data=result, status=status.HTTP_200_OK)
 
 class UserSetting(APIView):
 
