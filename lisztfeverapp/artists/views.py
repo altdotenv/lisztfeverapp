@@ -83,8 +83,6 @@ class SearchArtist(APIView):
                 with connection.cursor() as cursor:
                     cursor.execute(query, [terms, user])
                     data = self.dictfetchall(cursor)
-                    if not data or not len(data):
-                        return Response(status=status.HTTP_409_CONFLICT)
 
                 if data:
 
