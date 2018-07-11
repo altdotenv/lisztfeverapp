@@ -173,7 +173,7 @@ AWS_PRELOAD_METADATA = True
 # the site admins bon every HTTP 500 error when DEBUG=False.
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-LOG_PATH = os.path.join('/var/log/', "web-actions/")
+LOG_PATH = os.path.join('/opt/python/', "log/")
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
