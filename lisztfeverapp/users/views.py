@@ -18,7 +18,7 @@ from datetime import date, timedelta, datetime
 from collections import OrderedDict
 import boto3
 from django.db import connection
-
+from .. import tracker
 
 class UserMain(APIView):
 
@@ -70,6 +70,8 @@ class UserMain(APIView):
 
             for i in data:
                 i['genres'] = i['genres'].split(',')
+
+        tracker.WebLogs.user_click(self, user.username, request.path, request.META['HTTP_REFERER'])
 
         return Response(data=data, status=status.HTTP_200_OK)
 
@@ -151,6 +153,8 @@ class UserPlan(APIView):
                 venue_added_event.update({'event':i, 'venue': venue})
                 result.append(venue_added_event)
 
+        tracker.WebLogs.user_click(self, user.username, request.path)
+
         return Response(data=result, status=status.HTTP_200_OK)
 
     def get_is_planned(self, user, event_id):
@@ -229,6 +233,8 @@ class FacebookListenMusic(APIView):
                 self.invoke_lambda(user_id, artist_id)
             except:
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            tracker.WebLogs.listen_music(self, user_id, artist_id)
 
             return Response(status=status.HTTP_200_OK)
 

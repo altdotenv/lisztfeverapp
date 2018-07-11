@@ -6,6 +6,7 @@ from lisztfeverapp.users import models as user_models
 from lisztfeverapp.artists import models as artist_models
 from collections import OrderedDict
 from django.db import connection
+from .. import tracker
 
 # Create your views here.
 
@@ -95,6 +96,8 @@ class EventByArtistId(APIView):
 
                 i['event_start_local_time'] = str(i['event_start_local_time'])[:5]
 
+            tracker.WebLogs.concert_dates(self, user.username, artist_id)
+
             return Response(data=data, status=status.HTTP_200_OK)
 
         else:
@@ -144,6 +147,8 @@ class PlanEvent(APIView):
             )
             new_plan.save()
 
+            tracker.WebLogs.save_to_calendar(self, user, found_event.eventid)
+
             return Response(status=status.HTTP_201_CREATED)
 
 class UnPlanEvent(APIView):
@@ -163,6 +168,8 @@ class UnPlanEvent(APIView):
                 event=found_event.eventid
             )
             preexisting_plan.delete()
+
+            tracker.WebLogs.delete_event(self, user, found_event.eventid)
 
             return Response(status=status.HTTP_204_NO_CONTENT)
 

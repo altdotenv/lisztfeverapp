@@ -1,5 +1,7 @@
 from .base import *  # noqa
 from .base import env
+import os
+import logging
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -65,4 +67,56 @@ INSTALLED_APPS += ['django_extensions']  # noqa F405
 # Your stuff...
 # ------------------------------------------------------------------------------
 
-FB_APP_SECRET = env('FB_APP_SECRET', default="d1b796668ef444802a7f4dcb910b0ca1")
+FB_APP_SECRET = env('FB_APP_SECRET')
+
+LOG_PATH = os.path.join('/Users/jisuhan/Desktop/lisztfever/lisztfeverapp/', "log/")
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s]- %(message)s'
+        }
+    },
+    'handlers': {
+        'django_error': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_PATH + 'django.log',
+            'formatter': 'standard'
+        },
+        'info': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_PATH + 'info.log',
+            'formatter': 'standard'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+        }
+    },
+    'loggers': {
+        'info': {
+            'handlers': ['info', "console"],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['django_error', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        }
+    },
+}

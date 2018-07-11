@@ -1,5 +1,5 @@
 import logging
-
+import os
 from .base import *  # noqa
 from .base import env
 
@@ -173,6 +173,7 @@ AWS_PRELOAD_METADATA = True
 # the site admins bon every HTTP 500 error when DEBUG=False.
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
+LOG_PATH = os.path.join('/var/log/', "web-actions/")
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -186,6 +187,9 @@ LOGGING = {
             'format': '%(levelname)s %(asctime)s %(module)s '
                       '%(process)d %(thread)d %(message)s'
         },
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s]- %(message)s'
+        }
     },
     'handlers': {
         'mail_admins': {
@@ -198,8 +202,37 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
+        'django_error': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_PATH + 'django.log',
+            'maxBytes': 50000,
+            'formatter': 'standard'
+        },
+        'info': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOG_PATH + 'info.log',
+            'maxBytes': 50000,
+            'formatter': 'standard'
+        },
     },
     'loggers': {
+        'info': {
+            'handlers': ['info'],
+            'level': 'INFO',
+            'propagate': True
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',

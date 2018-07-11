@@ -4,6 +4,7 @@ from rest_framework import status
 from . import models, serializers
 from lisztfeverapp.users import models as user_models
 from django.db import connection
+from .. import tracker
 
 class Artist(APIView):
 
@@ -26,6 +27,8 @@ class SearchArtist(APIView):
         user = request.user
 
         if terms is not None:
+
+            tracker.WebLogs.search(self, user.username, terms)
 
             terms = terms.split(",")
 
@@ -118,6 +121,7 @@ class SearchArtist(APIView):
                         for artist in self.dictfetchall(cursor):
                             artist['genres'] = artist['genres'].split(',')
                             data.append(artist)
+
 
             return Response(data=data, status=status.HTTP_200_OK)
 
