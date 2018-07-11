@@ -202,13 +202,6 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
-        'django_error': {
-            'level': 'WARNING',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOG_PATH + 'django.log',
-            'maxBytes': 50000,
-            'formatter': 'standard'
-        },
         'info': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -222,16 +215,6 @@ LOGGING = {
             'handlers': ['info'],
             'level': 'INFO',
             'propagate': True
-        },
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'django.db.backends': {
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': True,
         },
         'django.request': {
             'handlers': ['mail_admins'],
