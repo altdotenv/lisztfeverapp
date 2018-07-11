@@ -55,7 +55,8 @@ class WebLogs:
 
         try:
 
-            if ref:
+            if ref and re.search('ref=(.*)&', urlparse(ref).query):
+
                 ref = re.search('ref=(.*)&', urlparse(ref).query)
                 ref = ref.group(1)
 
