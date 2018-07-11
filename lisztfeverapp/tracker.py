@@ -55,16 +55,25 @@ class WebLogs:
 
         try:
 
-            ref = re.search('ref=(.*)&', urlparse(ref).query)
-            ref = ref.group(1)
+            if ref:
+                ref = re.search('ref=(.*)&', urlparse(ref).query)
+                ref = ref.group(1)
 
-            logger.info({
-                'user_id': user_id,
-                'action': 'click',
-                'source': 'web',
-                'payload': url,
-                'ref': ref
-            })
+                logger.info({
+                    'user_id': user_id,
+                    'action': 'click',
+                    'source': 'web',
+                    'payload': url,
+                    'ref': ref
+                })
+
+            else:
+                logger.info({
+                    'user_id': user_id,
+                    'action': 'click',
+                    'source': 'web',
+                    'payload': url
+                })
 
         except NameError:
 

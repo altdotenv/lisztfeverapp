@@ -153,7 +153,7 @@ class UserPlan(APIView):
                 venue_added_event.update({'event':i, 'venue': venue})
                 result.append(venue_added_event)
 
-        tracker.WebLogs.user_click(self, user.username, request.path)
+        tracker.WebLogs.user_click(self, user.username, request.path, None)
 
         return Response(data=result, status=status.HTTP_200_OK)
 
