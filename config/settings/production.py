@@ -183,12 +183,6 @@ LOGGING = {
         }
     },
     'handlers': {
-        'django_error': {
-            'level': 'WARNING',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOG_PATH + 'django.log',
-            'formatter': 'standard'
-        },
         'info': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -213,7 +207,7 @@ LOGGING = {
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['django_error', 'console'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
         },
