@@ -1,0 +1,55 @@
+.landing {
+  .landing-full {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url("images/lisztfever_bg3.jpg");
+    background-position: 70% 50%;
+    background-repeat: no-repeat;
+    @include breakpoint("phone-tablet"){
+      background-size: 1300px;
+    };
+    .landing-main__logo {
+      max-width: 600px;
+      @include breakpoint("phone-tablet"){
+        width: 80%;
+      };
+    }
+    .landing-main__caption {
+      margin-top: 20px;
+      font-size: 23px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      @include breakpoint("phone-tablet"){
+        font-size: 17px;
+        letter-spacing: 1.5px;
+      };
+      color: $main-pink;
+    }
+    .landing-main__msgus {
+      margin-top: 200px;
+      .button-send {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        width: 100%;
+        padding: 8px 50px;
+        background: #E83862;
+        border: 2px solid #E83862;
+        border-radius: 4px;
+        text-decoration: none;
+        span {
+          margin-left: 5px;
+          font-size: 12px;
+          font-weight: 300;
+          letter-spacing: 1px;
+        }
+      }
+    }
+  }
+}
