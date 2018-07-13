@@ -37,12 +37,18 @@
       a:last-child {
         margin-left: 15px;
       }
+      a:hover {
+        opacity: 0.6;
+      }
       img {
         width: 150px;
         margin-bottom: 10px;
       }
       i {
         color: $middle-grey;
+      }
+      i:hover {
+        opacity: 0.8;
       }
       @include breakpoint("phone-tablet"){
         img {
