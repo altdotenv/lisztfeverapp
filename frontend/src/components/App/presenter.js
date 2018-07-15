@@ -15,9 +15,9 @@ import ListenMusic from "components/ListenMusic";
 import CloseWebview from "components/CloseWebview";
 
 const App = props => [
-  props.isLoggedIn ? <Navigation key={1} /> : null,
+  props.pathname === '/' ? null : props.isLoggedIn ? <Navigation key={1} /> : null,
   props.isLoggedIn ? <PrivateRoutes key={2} /> : <PublicRoutes key={2} />,
-  props.isLoggedIn ? <Footer key={3} /> : <Footer2 key={3} />
+  props.pathname === '/' ? <Footer2 key={3} /> : props.isLoggedIn ? <Footer key={3} /> : <Footer2 key={3} />
 ];
 
 App.propTypes = {

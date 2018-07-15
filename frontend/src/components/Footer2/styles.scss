@@ -1,4 +1,5 @@
 .footer {
+  bottom: 0;
   background-color: #353535;
   width: 100%;
   display: flex;
@@ -14,6 +15,7 @@
   };
   .row {
     width: 100%;
+    max-width: 1800px;
     display: flex;
     justify-content: space-between;
     align-items: center;
