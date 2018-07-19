@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 
 const mapStateToProps = (state, ownProps) => {
   const { user, routing: { location } } = state;
-  console.log(state);
   return {
     isLoggedIn: user.isLoggedIn,
     pathname: location.pathname
