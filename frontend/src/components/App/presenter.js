@@ -13,6 +13,8 @@ import Landing from "components/Landing";
 import SignedRequest from "components/SignedRequest";
 import ListenMusic from "components/ListenMusic";
 import CloseWebview from "components/CloseWebview";
+import Terms from "components/Terms";
+import Policy from "components/Policy";
 
 const App = props => [
   props.pathname === '/' ? null : props.isLoggedIn ? <Navigation key={1} /> : null,
@@ -27,6 +29,8 @@ App.propTypes = {
 const PrivateRoutes = props => (
   <Switch>
     <Route exact path="/" component={Landing} />
+    <Route exact path="/terms" component={Terms} />
+    <Route exact path="/policy" component={Policy} />
     <Route exact path="/plan" component={Plan} />
     <Route exact path="/feed" component={Feed} />
     <Route exact path="/event/artist/:artistId" component={Event} />
@@ -46,6 +50,8 @@ const PrivateRoutes = props => (
 const PublicRoutes = props => (
   <Switch>
     <Route exact path="/" component={Landing} />
+    <Route exact path="/terms" component={Terms} />
+    <Route exact path="/policy" component={Policy} />
     <Route exact path="/signed_request/:path" component={SignedRequest} />
     <Route
       exact
