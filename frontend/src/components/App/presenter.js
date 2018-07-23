@@ -17,9 +17,9 @@ import Terms from "components/Terms";
 import Policy from "components/Policy";
 
 const App = props => [
-  props.pathname === '/' || '/terms' || '/policy' ? null : props.isLoggedIn ? <Navigation key={1} /> : null,
+  props.pathname === ('/' || '/terms' || '/policy') ? null : props.isLoggedIn ? <Navigation key={1} /> : null,
   props.isLoggedIn ? <PrivateRoutes key={2} /> : <PublicRoutes key={2} />,
-  props.pathname === '/' || '/terms' || '/policy' ? <Footer2 key={3} /> : props.isLoggedIn ? <Footer key={3} /> : <Footer2 key={3} />
+  props.pathname === ('/' || '/terms' || '/policy') ? <Footer2 key={3} /> : props.isLoggedIn ? <Footer key={3} /> : <Footer2 key={3} />
 ];
 
 App.propTypes = {
