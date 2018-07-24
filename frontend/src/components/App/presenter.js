@@ -15,11 +15,14 @@ import ListenMusic from "components/ListenMusic";
 import CloseWebview from "components/CloseWebview";
 import Terms from "components/Terms";
 import Policy from "components/Policy";
+import NotFound from "components/NotFound";
 
 const App = props => [
-  props.pathname === ('/' || '/terms' || '/policy') ? null : props.isLoggedIn ? <Navigation key={1} /> : null,
+  props.pathname === ('/' || '/terms' || '/policy') ? null
+    : props.isLoggedIn ? <Navigation key={1} /> : null,
   props.isLoggedIn ? <PrivateRoutes key={2} /> : <PublicRoutes key={2} />,
-  props.pathname === ('/' || '/terms' || '/policy') ? <Footer2 key={3} /> : props.isLoggedIn ? <Footer key={3} /> : <Footer2 key={3} />
+  props.pathname === ('/' || '/terms' || '/policy') ? <Footer2 key={3} />
+    : props.isLoggedIn ? <Footer key={3} /> : <Footer2 key={3} />
 ];
 
 App.propTypes = {
@@ -44,6 +47,7 @@ const PrivateRoutes = props => (
     />
     <Route exact path="/listen/:artistId" component={ListenMusic} />
     <Route exact path="/close/browser" component={CloseWebview} />
+    <Route exact path="*" component={NotFound} />
   </Switch>
 );
 
@@ -58,6 +62,7 @@ const PublicRoutes = props => (
       path="/signed_request/event/artist/:artistId"
       component={SignedRequest}
     />
+    <Route exact path="*" component={NotFound} />
   </Switch>
 );
 
