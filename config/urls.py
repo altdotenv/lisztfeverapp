@@ -5,8 +5,10 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 from django.urls import include, path  #django 2.0 version url dispatcher
+from django.http import HttpResponse
 from rest_framework_jwt.views import obtain_jwt_token
 from lisztfeverapp import views
+import urllib
 
 urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
@@ -17,8 +19,9 @@ urlpatterns = [
     path('user/', include("lisztfeverapp.users.urls")),
     path('artist/', include("lisztfeverapp.artists.urls")),
     path('event/', include("lisztfeverapp.events.urls")),
-    path('accounts/', include('allauth.urls'))
-
+    path('accounts/', include('allauth.urls')),
+    path('robots.txt', lambda r: HttpResponse("User-agent: *\nDisallow: /admin/\nSitemap: https://lisztfever.com/sitemap.xml", content_type="text/plain")),
+    path('sitemap.xml', lambda r: HttpResponse(urllib.request.urlopen("https://s3.amazonaws.com/lisztfeverapp/sitemap.xml").read(), content_type='text/xml'))
     # Your stuff: custom urls includes go here
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
