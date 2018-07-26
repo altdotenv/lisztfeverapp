@@ -6,7 +6,7 @@ const NotFound = (props, context) => (
   <main className={styles.notFound}>
     <div className={styles.column}>
       <div className={styles.notFound__error}>404</div>
-      <div className={styles.notFound__text}>Nothing Found :(</div>
+      <div className={styles.notFound__text}>Nothing found :(</div>
     </div>
     <div className={styles.column}>
       <a href="/" className={styles.button}>Back to Home</a>

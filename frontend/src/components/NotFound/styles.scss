@@ -17,11 +17,17 @@
     justify-content: center;
     align-items: center;
     .not-found__error {
-      font-size: 100px;
+      font-size: 180px;
+      @include breakpoint("phone-tablet"){
+        font-size: 100px;
+      };
       font-weight: 800;
     }
     .not-found__text {
-      font-size: 25px;
+      font-size: 45px;
+      @include breakpoint("phone-tablet"){
+        font-size: 25px;
+      };
     }
     &:first-child {
       margin-bottom: 50px;
@@ -30,13 +36,11 @@
       text-align: center;
     }
     a {
-      margin-left: 30px;
       text-decoration: none;
       @include pinkButton();
-      padding: 10px;
+      padding: 10px 20px;
       @include breakpoint("phone-tablet"){
-        margin-left: 10px;
-        padding:8px;
+        padding: 8px 15px;
       };
     }
     a:hover {
@@ -44,25 +48,3 @@
     }
   }
 }
-
-
-// &:first-child {
-//   display: flex;
-//   flex-direction: row;
-//   .not-found__error {
-//     font-size: 80px;
-//     margin-bottom: 20px;
-//     @include breakpoint("phone-tablet"){
-//       font-size: 50px;
-//       margin-bottom: 10px;
-//     };
-//   }
-//   .not-found__text {
-//     font-size: 20px;
-//     display: flex;
-//     justify-content: flex-end;
-//     @include breakpoint("phone-tablet"){
-//       font-size: 15px;
-//     };
-//   }
-// }
